@@ -1,0 +1,3 @@
+TODO: 
+- support for comment nodes and data validation (validate method should check constraints)
+- seperate directories for qb/qbpos schema files
