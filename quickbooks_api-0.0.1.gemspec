@@ -1,5 +1,5 @@
 spec = Gem::Specification.new do |s|
-  s.name = 'quickbooks'
+  s.name = 'quickbooks_api'
   s.version = '0.0.1'
 
   s.summary = "QuickBooks XML API"
