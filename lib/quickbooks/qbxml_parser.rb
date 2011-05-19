@@ -1,8 +1,14 @@
 #!/usr/bin/env ruby
 
 class Quickbooks::QbxmlParser
-  include Quickbooks
   include Quickbooks::Support
+
+XML_DOCUMENT = Nokogiri::XML::Document
+XML_NODE_SET = Nokogiri::XML::NodeSet
+XML_NODE = Nokogiri::XML::Node
+XML_ELEMENT = Nokogiri::XML::Element
+XML_COMMENT= Nokogiri::XML::Comment
+XML_TEXT = Nokogiri::XML::Text
 
 def parse_file(qbxml_file)
   parse(File.read(qbxml_file))
@@ -13,10 +19,8 @@ def parse(qbxml)
   process_xml_obj(xml_doc, nil)
 end
 
-# private
+private
 
-# process qbxml
-#
 def process_xml_obj(xml_obj, parent)
   case xml_obj
   when XML_DOCUMENT
@@ -39,20 +43,12 @@ def process_xml_obj(xml_obj, parent)
   end
 end
 
-# child class should overwrite these 
-#
 def process_leaf_node(xml_obj, parent_instance)
   attr_name, data = parse_leaf_node_data(xml_obj)
   if parent_instance
     set_attribute_value(parent_instance, attr_name, data)
   end
   parent_instance
-end
-
-def parse_leaf_node_data(xml_obj)
-  attr_name = to_attribute_name(xml_obj)
-  text_node = xml_obj.children.first
-  [attr_name, text_node.text]
 end
 
 def process_non_leaf_node(xml_obj, parent_instance)
@@ -64,6 +60,18 @@ def process_non_leaf_node(xml_obj, parent_instance)
   instance
 end
 
+def process_comment_node(xml_obj, parent_instance)
+  parent_instance
+end
+
+# helpers
+#
+def parse_leaf_node_data(xml_obj)
+  attr_name = to_attribute_name(xml_obj)
+  text_node = xml_obj.children.first
+  [attr_name, text_node.text]
+end
+
 def fetch_qbxml_class_instance(xml_obj)
   instance = Qbxml.const_get(xml_obj.name).new
   instance
@@ -73,9 +81,24 @@ def set_attribute_value(instance, attr_name, data)
   instance.send("#{attr_name}=", data) if instance.respond_to?(attr_name)
 end
 
-def process_comment_node(xml_obj, parent_instance)
-  parent_instance
+def is_leaf_node?(xml_obj)
+  xml_obj.children.size == 1 && xml_obj.children.first.class == XML_TEXT
 end
 
+def to_attribute_name(obj)
+  name = \
+    if obj.is_a? Class
+      simple_class_name(obj)
+    elsif obj.is_a? XML_ELEMENT
+      obj.name
+    else
+      obj.to_s
+    end
+  inflector.underscore(name)
+end
+
+def simple_class_name(klass)
+  klass.name.split("::").last
+end
 
 end

@@ -3,26 +3,36 @@ module Quickbooks::Qbxml; end
 
 # inheritance base for schema classes
 class Quickbooks::Qbxml::Base
-  include Quickbooks
   include Quickbooks::Support
+  extend  Quickbooks::Support
 
 #QB_TYPE_CONVERSION_MAP= {
+  #"AMTTYPE"      => lambda {|d| String(d)},
+  #"BOOLTYPE"     => lambda {|d| String(d)},
   #"DATETIMETYPE" => lambda {|d| Date.parse(d)},
+  #"DATETYPE"     => lambda {|d| Date.parse(d)},
   #"ENUMTYPE"     => lambda {|d| String(d)},
+  #"FLOATTYPE"    => lambda {|d| String(d)},
+  #"GUIDTYPE"     => lambda {|d| String(d)},
   #"IDTYPE"       => lambda {|d| String(d)},
   #"INTTYPE"      => lambda {|d| Integer(d)},
   #"PERCENTTYPE"  => lambda {|d| Float(d)},
-  #"QUANTTYPE"    => lambda {|d| Integer(d)},
+  #"QUANTYPE"     => lambda {|d| Integer(d)},
   #"STRTYPE"      => lambda {|d| String(d)}
 #}
 
 QB_TYPE_CONVERSION_MAP= {
+  "AMTTYPE"      => lambda {|d| String(d)},
+  "BOOLTYPE"     => lambda {|d| String(d)},
   "DATETIMETYPE" => lambda {|d| String(d)},
+  "DATETYPE"     => lambda {|d| String(d)},
   "ENUMTYPE"     => lambda {|d| String(d)},
+  "FLOATTYPE"    => lambda {|d| String(d)},
+  "GUIDTYPE"     => lambda {|d| String(d)},
   "IDTYPE"       => lambda {|d| String(d)},
   "INTTYPE"      => lambda {|d| String(d)},
   "PERCENTTYPE"  => lambda {|d| String(d)},
-  "QUANTTYPE"    => lambda {|d| String(d)},
+  "QUANTYPE"     => lambda {|d| String(d)},
   "STRTYPE"      => lambda {|d| String(d)}
 }
 
@@ -75,6 +85,14 @@ end
 
 def self.attribute_names
   instance_methods(false).reject { |m| m[-1..-1] == '=' } 
+end
+
+def self.type_map
+  attribute_names.inject({}) do |h, a|
+    attr_type = self.send("#{a}_type") 
+    h[a] = cached_classes.include?(attr_type) ? attr_type.type_map : attr_type
+    h
+  end
 end
 
 end
