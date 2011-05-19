@@ -7,7 +7,7 @@ COMMENT_MATCHER = /\A#{COMMENT_START}.*#{COMMENT_END}\z/
 
 
 def parse_file(qbxml_file)
-  parse(
+  parse( 
     cleanup_qbxml(
       File.read(qbxml_file)))
 end
@@ -45,17 +45,17 @@ end
 def build_qbxml_class(xml_obj)
   obj_name = xml_obj.name
   unless qbxml_class_defined?(obj_name) 
-    klass = Class.new(Qbxml::Base)
-    Qbxml.const_set(obj_name, klass) 
+    klass = Class.new(QbxmlBase)
+    get_schema_namespace.const_set(obj_name, klass) 
     add_xml_template(klass, xml_obj.to_xml)
   else
-    klass = Qbxml.const_get(obj_name)
+    klass = get_schema_namespace.const_get(obj_name)
   end
   klass
 end
 
 def qbxml_class_defined?(name)
-  Qbxml.constants.include?(name)
+  get_schema_namespace.constants.include?(name)
 end
 
 # remove all comment lines and empty nodes

@@ -10,12 +10,13 @@ def add_strict_attribute(klass, attr_name, type)
     attr_accessor :#{attr_name}
 
     def #{attr_name}=(obj)
-      if obj.class == #{attr_name}_type
+      expected_type = self.class.#{attr_name}_type
+      if obj.class == expected_type
         @#{attr_name} = obj
       elsif obj.is_a?(Hash)
         @#{attr_name} = #{type}.new(obj)
       else
-        raise(TypeError, "expecting an object of type #{attr_name}_type") 
+        raise(TypeError, "expecting an object of type \#{expected_type}") 
       end
     end
   end
@@ -32,7 +33,7 @@ def add_casting_attribute(klass, attr_name, type)
     attr_accessor :#{attr_name}
 
     def #{attr_name}=(obj)
-      type_casting_proc =  QB_TYPE_CONVERSION_MAP["#{type}"] 
+      type_casting_proc = QB_TYPE_CONVERSION_MAP["#{type}"] 
       @#{attr_name} = type_casting_proc ? type_casting_proc.call(obj) : obj
     end
   end
