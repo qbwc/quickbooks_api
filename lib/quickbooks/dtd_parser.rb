@@ -54,16 +54,4 @@ def build_qbxml_class(xml_obj)
   klass
 end
 
-def qbxml_class_defined?(name)
-  get_schema_namespace.constants.include?(name)
-end
-
-# remove all comment lines and empty nodes
-def cleanup_qbxml(qbxml)
-  qbxml = qbxml.split('\n')
-  qbxml.map! { |l| l.strip }
-  qbxml.reject! { |l| l =~ COMMENT_MATCHER }
-  qbxml.join('')
-end
-
 end

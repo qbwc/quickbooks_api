@@ -6,7 +6,6 @@ spec = Gem::Specification.new do |s|
   s.description = %{A QuickBooks QBXML wrapper for Ruby}
   s.files = Dir['lib/**/*.rb'] + Dir['xml_schema/*.xml'] + Dir['sample_data/*.xml'] + ['ruby_schema/.placeholder']
   s.require_path = 'lib'
-  s.has_rdoc = false
   s.author = "Alex Skryl"
   s.email = "rut216@gmail.com"
   s.homepage = "http://github.com/skryl"

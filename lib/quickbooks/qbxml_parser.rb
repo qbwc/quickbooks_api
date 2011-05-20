@@ -65,7 +65,7 @@ def process_comment_node(xml_obj, parent_instance)
 end
 
 # helpers
-#
+
 def parse_leaf_node_data(xml_obj)
   attr_name = to_attribute_name(xml_obj)
   text_node = xml_obj.children.first
