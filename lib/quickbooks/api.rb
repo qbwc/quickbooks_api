@@ -24,7 +24,7 @@ def parse_qbxml(qbxml)
 end
 
 def to_qbxml(data)
-  raise(ArgumentError, "argument must be a hash with quickbooks object definition" unless data.is_a? Hash
+  raise(ArgumentError, "argument must be a hash with quickbooks object definition") unless data.is_a? Hash
   qbxml_data = find_qbxml_hash(data)
   get_container_class.new(qbxml_data)
 end
@@ -50,14 +50,14 @@ end
 # rebuilds schema cache in memory and writes to disk if desired
 #
 def rebuild_schema_cache(force = false, write_to_disk = false)
-  dtd_parser.parse_file(@dtd_file) if (cached_classes[schema_type].empty? || force)
+  dtd_parser.parse_file(@dtd_file) if (cached_classes.empty? || force)
   dump_cached_classes if write_to_disk
 end
 
 # writes dynamically generated api classes to disk
 #
 def dump_cached_classes
-  cached_classes[schema_type].each do |c|  
+  cached_classes.each do |c|  
     File.open("#{get_disk_cache_path}/#{to_attribute_name(c)}.rb", 'w') do |f|
       f << Ruby2Ruby.translate(c)
     end

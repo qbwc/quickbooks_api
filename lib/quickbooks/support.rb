@@ -53,10 +53,11 @@ module Quickbooks::Support
 
   # fetches all the dynamically generated schema classes
   def cached_classes
-    SCHEMA_MAP.inject({}) do |h, (schema_type, opts)|
+    cached_classes = SCHEMA_MAP.inject({}) do |h, (schema_type, opts)|
       namespace = opts[:namespace]
       h[schema_type] = namespace.constants.map { |klass| namespace.const_get(klass) }; h
     end
+    cached_classes[schema_type]
   end
 
   def is_cached_class?(klass)
