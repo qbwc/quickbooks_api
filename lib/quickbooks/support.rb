@@ -83,6 +83,11 @@ module Quickbooks::Support::XML
   XML_COMMENT= Nokogiri::XML::Comment
   XML_TEXT = Nokogiri::XML::Text
 
+  COMMENT_START = "<!--"
+  COMMENT_END = "-->"
+  COMMENT_MATCHER = /\A#{COMMENT_START}.*#{COMMENT_END}\z/
+
+
   def is_leaf_node?(xml_obj)
     xml_obj.children.size == 1 && xml_obj.children.first.class == XML_TEXT
   end

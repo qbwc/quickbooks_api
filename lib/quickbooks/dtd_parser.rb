@@ -1,11 +1,6 @@
 class Quickbooks::DtdParser < Quickbooks::QbxmlParser
   include Quickbooks::ClassBuilder
 
-COMMENT_START = "<!--"
-COMMENT_END = "-->"
-COMMENT_MATCHER = /\A#{COMMENT_START}.*#{COMMENT_END}\z/
-
-
 def parse_file(qbxml_file)
   parse( 
     cleanup_qbxml(
@@ -15,7 +10,7 @@ end
 private
 
 def process_leaf_node(xml_obj, parent_class)
- attr_name, qb_type = parse_leaf_node_type(xml_obj)
+ attr_name, qb_type = parse_leaf_node_data(xml_obj)
   if parent_class
     add_casting_attribute(parent_class, attr_name, qb_type)
   end
@@ -35,12 +30,6 @@ def process_comment_node(xml_obj, parent_class)
 end
 
 # helpers
-
-def parse_leaf_node_type(xml_obj)
-  attr_name = to_attribute_name(xml_obj)
-  text_node = xml_obj.children.first
-  [attr_name, text_node.text]
-end
 
 def build_qbxml_class(xml_obj)
   obj_name = xml_obj.name
