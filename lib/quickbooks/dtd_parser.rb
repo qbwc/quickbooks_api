@@ -18,7 +18,7 @@ end
 
 def process_non_leaf_node(xml_obj, parent_class)
   klass = build_qbxml_class(xml_obj)
-  attr_name = to_attribute_name(klass)
+  attr_name = to_attribute_name(xml_obj)
   if parent_class
     add_strict_attribute(parent_class, attr_name, klass)
   end

@@ -11,7 +11,7 @@ def initialize(schema_type)
 end
 
 def parse_file(qbxml_file)
-  parse(schema_type, File.read(qbxml_file))
+  parse(qbxml_file.read)
 end
 
 def parse(qbxml)
@@ -78,7 +78,17 @@ def fetch_qbxml_class_instance(xml_obj)
 end
 
 def set_attribute_value(instance, attr_name, data)
-  instance.send("#{attr_name}=", data) if instance.respond_to?(attr_name)
+  if instance.respond_to?(attr_name) 
+    cur_val = instance.send(attr_name)
+    case cur_val
+    when nil
+      instance.send("#{attr_name}=", data)
+    when Array
+      cur_val << data
+    else
+      instance.send("#{attr_name}=", [cur_val, data])
+    end
+  end
 end
 
 

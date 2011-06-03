@@ -2,6 +2,7 @@ require 'rubygems'
 require 'ruby2ruby' # must be version 1.2.1 of ruby2ruby
 require 'nokogiri'
 require 'active_support'
+require 'active_support/core_ext'
 
 module Quickbooks; end
 

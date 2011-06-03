@@ -1,7 +1,7 @@
 require File.join(File.dirname(__FILE__), "spec_helper.rb")
 
 include Quickbooks::Support
-include Quickbooks::Support::XML
+include Quickbooks::Support::QBXML
 
 describe Quickbooks::Support do
 
@@ -80,7 +80,7 @@ describe Quickbooks::Support do
 
 end
 
-describe Quickbooks::Support::XML do
+describe Quickbooks::Support::QBXML do
 
   it "should set useful parsing constants" do
     XML_DOCUMENT.should == Nokogiri::XML::Document

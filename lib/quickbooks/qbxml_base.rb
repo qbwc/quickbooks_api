@@ -1,3 +1,5 @@
+#TODO: handling Array nodes explicitly blows... 
+
 # inheritance base for schema classes
 class Quickbooks::QbxmlBase
   include Quickbooks::Support
@@ -54,45 +56,43 @@ def to_qbxml
   root = xml_doc.root
   log.debug "to_qbxml#nodes_size: #{root.children.size}"
 
-  filled_nodes = []
-  root.children.each do |n|
-    log.debug "to_qbxml#n.class: #{n.class}"
-    case n
-    when XML_ELEMENT
-      attr_name = to_attribute_name(n.name)
-      log.debug "to_qbxml#attr_name: #{attr_name}"
+  # replace all children nodes of the template with populated data nodes
+  xml_nodes = []
+  root.children.each do |template|
+    next unless template.is_a? XML_ELEMENT
+    attr_name = to_attribute_name(template)
+    log.debug "to_qbxml#attr_name: #{attr_name}"
 
-      val = self.send(attr_name)
-      log.debug "to_qbxml#val: #{val}"
-      
-      if val
-        if is_leaf_node?(n)
-          n.children = val.to_s
-          filled_nodes.push(n)
-        else
-          filled_nodes.push(val.to_qbxml)
-        end
-      end
-    else next
+    val = self.send(attr_name)
+    next unless val
+
+    case val
+    when Array
+      xml_nodes += build_qbxml_nodes(template, val)
+    else
+      xml_nodes << build_qbxml_node(template, val)
     end
+    log.debug "to_qbxml#val: #{val}"
   end
-  log.debug "to_qbxml#filled_nodes_size: #{filled_nodes.size}"
-  root.children = filled_nodes.join('')
+
+  log.debug "to_qbxml#xml_nodes_size: #{xml_nodes.size}"
+  root.children = xml_nodes.join('')
   root
 end
 
 
+# TODO: Use XmlSimple to handle this?
 def inner_attributes
   top_level_attrs = \
     self.class.attribute_names.inject({}) do |h, m|
       h[m] = self.send(m); h
     end
   
-  populated_keys = top_level_attrs.values.compact
-  if populated_keys.size > 1
+  values = top_level_attrs.values.compact
+  if values.size > 1 || values.first.is_a?(Array)
     attributes
   else
-    populated_keys.first.inner_attributes
+    values.first.inner_attributes
   end
 end
 
@@ -104,16 +104,25 @@ def attributes
       case val
       when Quickbooks::QbxmlBase
         val.attributes
+      when Array
+        val.inject([]) do |a, obj| 
+          case obj
+          when Quickbooks::QbxmlBase
+            a << obj.attributes 
+          else a << obj
+          end
+        end
       else
         val
       end; h
   end
 end
+##########
 
 # class methods
 
 def self.attribute_names
-  instance_methods(false).reject { |m| m[-1..-1] == '=' } 
+  instance_methods(false).reject { |m| m[-1..-1] == '=' || m =~ /_xml_class/} 
 end
 
 
@@ -122,6 +131,38 @@ def self.type_map
     attr_type = self.send("#{a}_type") 
     h[a] = is_cached_class?(attr_type) ? attr_type.type_map : attr_type; h
   end
+end
+
+
+private
+
+
+def build_qbxml_node(node, val)
+  case val
+  when Quickbooks::QbxmlBase
+    val.to_qbxml
+  else
+    node.children = val.to_s
+    xml_nodes << node
+  end
+end
+
+def build_qbxml_nodes(node, val)
+  val.inject([]) do |a, v|
+    n = clone_qbxml_node(node,v)
+    a << n
+  end
+end
+
+def clone_qbxml_node(node, val)
+  n = node.clone
+  n.children = \
+    case val
+    when Quickbooks::QbxmlBase
+      val.to_qbxml 
+    else 
+      val.to_s
+    end; n
 end
 
 end
