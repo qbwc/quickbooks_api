@@ -1,0 +1,4 @@
+- support for node type constraints and validation
+- handling Array nodes explicitly blows...
+- try using XmlSimple for XML to hash conversion
+

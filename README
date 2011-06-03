@@ -1,3 +1,50 @@
-TODO: 
-- support for comment nodes and data validation (validate method should check constraints)
-- seperate directories for qb/qbpos schema files
+INITIALIZATION
+------------------------------------------------------------------------------
+
+# supported data types are:
+# :qb    - Quickbooks
+# :qbpos - Quickbooks Point Of Sale
+
+api = Quickbooks::API.new(:qbpos)
+
+# to cache the dynamically generated qbxml classes on disk
+api = Quickbooks::API.new(:qbpos, :use_disk_cache => true)
+
+# to increase logging
+api = Quickbooks::API.new(:qbpos, :log_level => 0)
+
+
+API INTROSPECTION
+------------------------------------------------------------------------------
+
+# returns all available wrapper classes
+api.qb_classes
+
+# returns all the supported fields for the wrapper class
+wrapper_class.attribute_names
+
+# returns a nested hash of all the expected data types for the wrapper class
+wrapper_class.type_map
+
+
+QBXML TO RUBY
+------------------------------------------------------------------------------
+
+# wrap qbxml data
+o = api.qbxml_to_obj(qbxml)
+
+# convert raw qbxml to a hash
+h = api.qbxml_to_hash(qbxml)
+
+# same as above but includes the top level containers (QBXML, etc)
+h = api.qbxml_to_hash(qbxml, true) 
+
+
+RUBY TO QBXML
+------------------------------------------------------------------------------
+
+# convert a hash to a qbxml object
+o = api.hash_to_obj(data_hash)
+
+# convert a hash to raw qbxml
+qbxml = api.hash_to_qbxml(data_hash)

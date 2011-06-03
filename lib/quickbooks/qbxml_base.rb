@@ -1,5 +1,3 @@
-#TODO: handling Array nodes explicitly blows... 
-
 # inheritance base for schema classes
 class Quickbooks::QbxmlBase
   include Quickbooks::Support
@@ -81,7 +79,6 @@ def to_qbxml
 end
 
 
-# TODO: Use XmlSimple to handle this?
 def inner_attributes
   top_level_attrs = \
     self.class.attribute_names.inject({}) do |h, m|

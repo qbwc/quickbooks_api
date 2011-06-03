@@ -43,7 +43,7 @@ end
 # CONVERSION TO QBXML
 
 def hash_to_qbxml(data)
-  hash_to_qbxml_obj(data).to_qbxml
+  hash_to_qbxml_obj(data).to_qbxml.to_s
 end
 
 # converts a hash to a qb object
@@ -52,6 +52,9 @@ def hash_to_obj(data)
   qb_obj = get_container_class.new(qbxml_data)
 end
   
+def qb_classes
+  cached_classes
+end
 
 private 
 
