@@ -2,7 +2,7 @@
 
 class Quickbooks::QbxmlParser
   include Quickbooks::Support
-  include Quickbooks::Support::XML
+  include Quickbooks::Support::QBXML
 
 attr_accessor :schema_type
 

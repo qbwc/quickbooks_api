@@ -1,6 +1,6 @@
 require 'forwardable'
 
-class Quickbooks::Logger
+class Quickbooks::Support::Logger
   extend Forwardable
 
   def_delegators :@logger, :level, :flush, :auto_flushing=

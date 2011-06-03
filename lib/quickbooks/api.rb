@@ -3,12 +3,12 @@ class Quickbooks::API
 
 attr_accessor :dtd_parser, :qbxml_parser, :schema_type
 
-def initialize(schema_type = nil, params = {})
+def initialize(schema_type = nil, opts = {})
   @schema_type = schema_type
-  use_disk_cache, log_level = params[:use_disk_cache], params[:log_level]
+  use_disk_cache, log_level = opts.values_at(:use_disk_cache, :log_level)
 
   unless valid_schema_type?
-    raise(ArgumentError, "schema type required, must be one of #{valid_schema_types.inspect}") 
+    raise(ArgumentError, "schema type required: #{valid_schema_types.inspect}") 
   end
 
   @magic_key = get_magic_hash_key
@@ -19,14 +19,37 @@ def initialize(schema_type = nil, params = {})
   load_qb_classes(use_disk_cache)
 end
 
-def parse_qbxml(qbxml)
-  qbxml_parser.parse(qbxml)
+# CONVERSION FROM QBXML
+
+def qbxml_to_hash(qbxml, include_container = false)
+  qb_obj = qbxml_to_obj(qbxml)
+  unless include_container
+    qb_obj.inner_attributes
+  else
+    qb_obj.attributes
+  end
 end
 
-def to_qbxml(data)
-  raise(ArgumentError, "argument must be a hash with quickbooks object definition") unless data.is_a? Hash
+# converts qbxml to a qb object
+def qbxml_to_obj(qbxml)
+  case qbxml
+  when IO
+    qbxml_parser.parse_file(qbxml)
+  else
+    qbxml_parser.parse(qbxml)
+  end
+end
+
+# CONVERSION TO QBXML
+
+def hash_to_qbxml(data)
+  hash_to_qbxml_obj(data).to_qbxml
+end
+
+# converts a hash to a qb object
+def hash_to_obj(data)
   qbxml_data = find_qbxml_hash(data)
-  get_container_class.new(qbxml_data)
+  qb_obj = get_container_class.new(qbxml_data)
 end
   
 
@@ -73,6 +96,8 @@ def find_qbxml_hash(data)
     end
   end
 end
+
+# class methods
 
 def self.log
   @@log ||= Logger.new(STDOUT, DEFAULT_LOG_LEVEL)

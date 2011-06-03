@@ -1,4 +1,4 @@
-module Quickbooks::ClassBuilder
+module Quickbooks::Support::ClassBuilder
 
 private
 

@@ -1,5 +1,5 @@
 class Quickbooks::DtdParser < Quickbooks::QbxmlParser
-  include Quickbooks::ClassBuilder
+  include Quickbooks::Support::ClassBuilder
 
 def parse_file(qbxml_file)
   parse( 

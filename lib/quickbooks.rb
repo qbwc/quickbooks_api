@@ -5,10 +5,11 @@ require 'active_support'
 
 module Quickbooks; end
 
-require 'quickbooks/logger'
 require 'quickbooks/support'
-require 'quickbooks/qbxml'
+require 'quickbooks/support/logger'
+require 'quickbooks/support/qbxml'
+require 'quickbooks/support/class_builder'
+require 'quickbooks/qbxml_base'
 require 'quickbooks/qbxml_parser'
-require 'quickbooks/class_builder'
 require 'quickbooks/dtd_parser'
 require 'quickbooks/api'

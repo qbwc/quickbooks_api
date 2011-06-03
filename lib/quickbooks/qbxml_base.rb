@@ -2,7 +2,7 @@
 class Quickbooks::QbxmlBase
   include Quickbooks::Support
   extend  Quickbooks::Support
-  include Quickbooks::Support::XML
+  include Quickbooks::Support::QBXML
 
 #QB_TYPE_CONVERSION_MAP= {
   #"AMTTYPE"          => lambda {|d| String(d)},
@@ -48,6 +48,7 @@ def initialize(params = nil)
   end
 end
 
+
 def to_qbxml
   xml_doc = Nokogiri::XML(self.class.xml_template)
   root = xml_doc.root
@@ -80,15 +81,41 @@ def to_qbxml
   root
 end
 
-def attributes
-  self.class.attribute_names.inject({}) do |h, m|
-    h[m] = self.send(m); h
+
+def inner_attributes
+  top_level_attrs = \
+    self.class.attribute_names.inject({}) do |h, m|
+      h[m] = self.send(m); h
+    end
+  
+  populated_keys = top_level_attrs.values.compact
+  if populated_keys.size > 1
+    attributes
+  else
+    populated_keys.first.inner_attributes
   end
 end
+
+
+def attributes
+  self.class.attribute_names.inject({}) do |h, m|
+    val = self.send(m)
+    h[m] = \
+      case val
+      when Quickbooks::QbxmlBase
+        val.attributes
+      else
+        val
+      end; h
+  end
+end
+
+# class methods
 
 def self.attribute_names
   instance_methods(false).reject { |m| m[-1..-1] == '=' } 
 end
+
 
 def self.type_map
   attribute_names.inject({}) do |h, a|
