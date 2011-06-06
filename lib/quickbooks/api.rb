@@ -1,7 +1,7 @@
 class Quickbooks::API
   include Quickbooks::Support
 
-attr_accessor :dtd_parser, :qbxml_parser, :schema_type
+attr_reader :dtd_parser, :qbxml_parser, :schema_type
 
 def initialize(schema_type = nil, opts = {})
   @schema_type = schema_type
@@ -11,15 +11,34 @@ def initialize(schema_type = nil, opts = {})
     raise(ArgumentError, "schema type required: #{valid_schema_types.inspect}") 
   end
 
-  @magic_key = get_magic_hash_key
   @dtd_file = get_dtd_file
   @dtd_parser = DtdParser.new(schema_type)
   @qbxml_parser = QbxmlParser.new(schema_type)
 
   load_qb_classes(use_disk_cache)
+
+  # load the container class template into memory (significantly speeds up wrapping of partial data hashes)
+  get_container_class.template(true)
 end
 
-# CONVERSION FROM QBXML
+def container
+  get_container_class
+end
+
+def qbxml_classes
+  cached_classes
+end
+
+# QBXML 2 RUBY
+
+def qbxml_to_obj(qbxml)
+  case qbxml
+  when IO
+    qbxml_parser.parse_file(qbxml)
+  else
+    qbxml_parser.parse(qbxml)
+  end
+end
 
 def qbxml_to_hash(qbxml, include_container = false)
   qb_obj = qbxml_to_obj(qbxml)
@@ -30,31 +49,24 @@ def qbxml_to_hash(qbxml, include_container = false)
   end
 end
 
-# converts qbxml to a qb object
-def qbxml_to_obj(qbxml)
-  case qbxml
-  when IO
-    qbxml_parser.parse_file(qbxml)
-  else
-    qbxml_parser.parse(qbxml)
-  end
-end
 
-# CONVERSION TO QBXML
+# RUBY 2 QBXML
+
+def hash_to_obj(data)
+  key = data.keys.first
+  value = data[key]
+
+  key_path = find_nested_key(container.template(true), key)
+  raise(RuntimeError, "#{key} class not found in api template") unless key_path
+
+  wrapped_data = build_hash_wrapper(key_path, value)
+  container.new(wrapped_data)
+end
 
 def hash_to_qbxml(data)
-  hash_to_qbxml_obj(data).to_qbxml.to_s
+  hash_to_obj(data).to_qbxml.to_s
 end
 
-# converts a hash to a qb object
-def hash_to_obj(data)
-  qbxml_data = find_qbxml_hash(data)
-  qb_obj = get_container_class.new(qbxml_data)
-end
-  
-def qb_classes
-  cached_classes
-end
 
 private 
 
@@ -86,16 +98,6 @@ def dump_cached_classes
   cached_classes.each do |c|  
     File.open("#{get_disk_cache_path}/#{to_attribute_name(c)}.rb", 'w') do |f|
       f << Ruby2Ruby.translate(c)
-    end
-  end
-end
-
-def find_qbxml_hash(data)
-  data.each do |k,v|
-    if k == @magic_key
-      return v
-    elsif v.is_a? Hash
-      return find_qbxml_hash(v)
     end
   end
 end

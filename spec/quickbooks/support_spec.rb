@@ -39,13 +39,6 @@ describe Quickbooks::Support do
     it "should determine the container class for any supported schema type" do
     end
 
-    it "should determine the magic hash key for any supported schema type" do
-      self.stub!(:schema_type => :qb)
-      get_magic_hash_key.should be_an_instance_of(Symbol)
-      self.stub!(:schema_type => :qbpos)
-      get_magic_hash_key.should be_an_instance_of(Symbol)
-    end
-    
     it "should return the disk cache path" do
       self.stub!(:schema_type => :qb)
       File.exists?(get_disk_cache_path).should be_true

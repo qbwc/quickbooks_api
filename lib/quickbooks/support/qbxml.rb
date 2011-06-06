@@ -12,10 +12,6 @@ module Quickbooks::Support::QBXML
   COMMENT_MATCHER = /\A#{COMMENT_START}.*#{COMMENT_END}\z/
 
 
-  def is_leaf_node?(xml_obj)
-    xml_obj.children.size == 1 && xml_obj.children.first.class == XML_TEXT
-  end
-  
   def to_attribute_name(obj)
     name = \
       if obj.is_a? Class
@@ -28,18 +24,16 @@ module Quickbooks::Support::QBXML
     inflector.underscore(name)
   end
 
-  # easily convert between CamelCase and under_score
-  def inflector
-    ActiveSupport::Inflector
-  end
 
-  def simple_class_name(klass)
-    klass.name.split("::").last
+  def is_leaf_node?(xml_obj)
+    xml_obj.children.size == 1 && xml_obj.children.first.class == XML_TEXT
   end
+  
 
   def qbxml_class_defined?(name)
     get_schema_namespace.constants.include?(name)
   end
+
 
   # remove all comment lines and empty nodes
   def cleanup_qbxml(qbxml)

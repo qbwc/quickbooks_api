@@ -1,0 +1,16 @@
+
+<?xml version="1.0"?>
+<QBPOSXML>
+    <QBPOSXMLMsgsRs>
+        <CustomerQueryRs requestID="1" retCount="1" statusCode="0" statusMessage="Status OK" statusSeverity="Info">
+            <CustomerRet>
+                <CompanyName>Kellogg</CompanyName>
+                <CompanyName>Kellogg</CompanyName>
+                <CompanyName>Kellogg</CompanyName>
+                <CompanyName>Kellogg</CompanyName>
+                <CompanyName>Kellogg</CompanyName>
+                <CompanyName>Kellogg</CompanyName>
+            </CustomerRet>
+        </CustomerQueryRs>
+    </QBPOSXMLMsgsRs>
+</QBPOSXML>

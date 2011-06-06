@@ -13,11 +13,11 @@ module Quickbooks::Support
     :qb    => {:dtd_file => "qbxmlops70.xml", 
                :namespace => QBXML, 
                :container_class => lambda { Quickbooks::QBXML::QBXML },
-               :magic_hash_key => :qbxml}.freeze,
+              }.freeze,
     :qbpos => {:dtd_file => "qbposxmlops30.xml", 
                :namespace => QBPOSXML, 
                :container_class => lambda { Quickbooks::QBPOSXML::QBPOSXML },
-               :magic_hash_key => :qbposxml}.freeze,
+              }.freeze,
   }.freeze
 
   DEFAULT_LOG_LEVEL = 1
@@ -44,10 +44,6 @@ private
     SCHEMA_MAP[schema_type][:container_class].call
   end
 
-  def get_magic_hash_key
-    SCHEMA_MAP[schema_type][:magic_hash_key]
-  end
-  
   def get_disk_cache_path
     "#{RUBY_SCHEMA_PATH}/#{schema_type.to_s}"
   end
@@ -66,6 +62,36 @@ private
       namespace = opts[:namespace]
       namespace.constants.include?(simple_class_name(klass))
     end
+  end
+
+  def simple_class_name(klass)
+    klass.name.split("::").last
+  end
+
+  def find_nested_key(hash, key)
+    hash.each do |k,v|
+      path = [k]
+      if k == key
+        return path
+      elsif v.is_a? Hash
+        nested_val = find_nested_key(v, key)
+        nested_val ? (return path + nested_val) : nil
+      end
+    end
+    return nil
+  end
+
+  def build_hash_wrapper(path, value)
+    hash_constructor = lambda { |h, k| h[k] = Hash.new(&hash_constructor) }
+
+    wrapped_data = Hash.new(&hash_constructor)
+    path.inject(wrapped_data) { |h, k| k == path.last ? h[k] = value: h[k] }
+    wrapped_data
+  end
+
+  # easily convert between CamelCase and under_score
+  def inflector
+    ActiveSupport::Inflector
   end
 
   def log

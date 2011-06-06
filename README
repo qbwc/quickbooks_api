@@ -20,31 +20,46 @@ API INTROSPECTION
 # returns all available wrapper classes
 api.qb_classes
 
+# returns the top level wrapper class for the api
+api.container
+
+# returns a hash of all the data types for the container class
+api.container.template
+
+# returns a full teplate (SLOOOW for top level classes)
+wrapper_class.template(true)
+
 # returns all the supported fields for the wrapper class
 wrapper_class.attribute_names
-
-# returns a nested hash of all the expected data types for the wrapper class
-wrapper_class.type_map
 
 
 QBXML TO RUBY
 ------------------------------------------------------------------------------
 
-# wrap qbxml data
+# wrap qbxml data in a qbxml object
 o = api.qbxml_to_obj(qbxml)
 
-# convert raw qbxml to a hash
+# convert qbxml object to hash
+o.attributes
+
+# same as above but includes the top level containers
+o.attributes(true)
+
+# directly convert raw qbxml to a hash
 h = api.qbxml_to_hash(qbxml)
 
-# same as above but includes the top level containers (QBXML, etc)
+# same as above but includes the top level containers 
 h = api.qbxml_to_hash(qbxml, true) 
 
 
 RUBY TO QBXML
 ------------------------------------------------------------------------------
 
-# convert a hash to a qbxml object
+# convert a hash to a qbxml object (automagically creates the top level containers)
 o = api.hash_to_obj(data_hash)
 
-# convert a hash to raw qbxml
+# convert a qbxml object to raw qbxml
+o.to_qbxml.to_s
+
+# convert a hash directly to raw qbxml
 qbxml = api.hash_to_qbxml(data_hash)

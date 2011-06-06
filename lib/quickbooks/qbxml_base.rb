@@ -56,9 +56,9 @@ def to_qbxml
 
   # replace all children nodes of the template with populated data nodes
   xml_nodes = []
-  root.children.each do |template|
-    next unless template.is_a? XML_ELEMENT
-    attr_name = to_attribute_name(template)
+  root.children.each do |xml_template|
+    next unless xml_template.is_a? XML_ELEMENT
+    attr_name = to_attribute_name(xml_template)
     log.debug "to_qbxml#attr_name: #{attr_name}"
 
     val = self.send(attr_name)
@@ -66,9 +66,9 @@ def to_qbxml
 
     case val
     when Array
-      xml_nodes += build_qbxml_nodes(template, val)
+      xml_nodes += build_qbxml_nodes(xml_template, val)
     else
-      xml_nodes << build_qbxml_node(template, val)
+      xml_nodes << build_qbxml_node(xml_template, val)
     end
     log.debug "to_qbxml#val: #{val}"
   end
@@ -76,6 +76,19 @@ def to_qbxml
   log.debug "to_qbxml#xml_nodes_size: #{xml_nodes.size}"
   root.children = xml_nodes.join('')
   root
+end
+
+
+def self.template(recursive = false)
+  if recursive
+    @nested_template ||= build_template(true)
+  else build_template(false)
+  end
+end
+
+
+def self.attribute_names
+  instance_methods(false).reject { |m| m[-1..-1] == '=' || m =~ /_xml_class/} 
 end
 
 
@@ -94,39 +107,16 @@ def inner_attributes
 end
 
 
-def attributes
+def attributes(recursive = true)
   self.class.attribute_names.inject({}) do |h, m|
     val = self.send(m)
-    h[m] = \
-      case val
-      when Quickbooks::QbxmlBase
-        val.attributes
-      when Array
-        val.inject([]) do |a, obj| 
-          case obj
-          when Quickbooks::QbxmlBase
-            a << obj.attributes 
-          else a << obj
-          end
-        end
+    if val
+      unless recursive
+        h[m] = val
       else
-        val
-      end; h
-  end
-end
-##########
-
-# class methods
-
-def self.attribute_names
-  instance_methods(false).reject { |m| m[-1..-1] == '=' || m =~ /_xml_class/} 
-end
-
-
-def self.type_map
-  attribute_names.inject({}) do |h, a|
-    attr_type = self.send("#{a}_type") 
-    h[a] = is_cached_class?(attr_type) ? attr_type.type_map : attr_type; h
+        h[m] = nested_attributes(val)
+      end
+    end; h
   end
 end
 
@@ -134,13 +124,29 @@ end
 private
 
 
+def nested_attributes(val)
+  case val
+  when Quickbooks::QbxmlBase
+    val.attributes
+  when Array
+    val.inject([]) do |a, obj| 
+      case obj
+      when Quickbooks::QbxmlBase
+        a << obj.attributes 
+      else a << obj
+      end
+    end
+  else val
+  end
+end
+
 def build_qbxml_node(node, val)
   case val
   when Quickbooks::QbxmlBase
     val.to_qbxml
   else
     node.children = val.to_s
-    xml_nodes << node
+    node
   end
 end
 
@@ -160,6 +166,13 @@ def clone_qbxml_node(node, val)
     else 
       val.to_s
     end; n
+end
+
+def self.build_template(recursive = false)
+  attribute_names.inject({}) do |h, a|
+    attr_type = self.send("#{a}_type") 
+    h[a] = (is_cached_class?(attr_type) && recursive) ? attr_type.build_template(true): attr_type; h
+  end
 end
 
 end
