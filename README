@@ -23,10 +23,10 @@ api.qb_classes
 # returns the top level wrapper class for the api
 api.container
 
-# returns a hash of all the data types for the container class
-api.container.template
+# returns a hash of all the data types for a wrapper class
+wrapper_class.template
 
-# returns a full teplate (SLOOOW for top level classes)
+# returns the full teplate for a wrapper class (SLOOOW for top level classes)
 wrapper_class.template(true)
 
 # returns all the supported fields for the wrapper class
