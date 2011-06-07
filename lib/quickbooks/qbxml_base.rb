@@ -1,8 +1,10 @@
 # inheritance base for schema classes
 class Quickbooks::QbxmlBase
   include Quickbooks::Support
-  extend  Quickbooks::Support
   include Quickbooks::Support::QBXML
+
+  extend  Quickbooks::Support
+  extend  Quickbooks::Support::API
 
 #QB_TYPE_CONVERSION_MAP= {
   #"AMTTYPE"          => lambda {|d| String(d)},
@@ -79,9 +81,9 @@ def to_qbxml
 end
 
 
-def self.template(recursive = false)
+def self.template(recursive = false, use_disk_cache = false)
   if recursive
-    @nested_template ||= build_template(true)
+    @template ||= load_template(true, use_disk_cache)
   else build_template(false)
   end
 end
@@ -123,6 +125,7 @@ end
 
 private
 
+# qbxml conversion
 
 def nested_attributes(val)
   case val
@@ -168,11 +171,42 @@ def clone_qbxml_node(node, val)
     end; n
 end
 
+# qbxml class templates
+
+def self.load_template(recursive = false, use_disk_cache = false)
+  if use_disk_cache && File.exist?(template_cache_path)
+    YAML.load(File.read(template_cache_path))
+  else
+    log.info "Warning: on disk template is missing, rebuilding..." if use_disk_cache
+    template = build_template(recursive)
+    dump_template(template) if use_disk_cache
+    template
+  end
+end
+
 def self.build_template(recursive = false)
   attribute_names.inject({}) do |h, a|
     attr_type = self.send("#{a}_type") 
-    h[a] = (is_cached_class?(attr_type) && recursive) ? attr_type.build_template(true): attr_type; h
+    h[a] = (is_cached_class?(attr_type) && recursive) ? attr_type.build_template(true): attr_type.to_s; h
   end
 end
+
+def self.dump_template(template)
+  File.open(template_cache_path, 'w') do |f|
+    f << template.to_yaml
+  end
+end
+
+def self.template_cache_path
+  "#{get_template_cache_path}/#{to_attribute_name(self)}.yml"
+end
+
+def self.schema_type
+  namespace = self.to_s.split("::")[1]
+  API::SCHEMA_MAP.find do |k,v|
+    simple_class_name(v[:namespace]) == namespace
+  end.first
+end
+
 
 end

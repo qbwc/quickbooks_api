@@ -8,6 +8,7 @@ INITIALIZATION
 api = Quickbooks::API.new(:qbpos)
 
 # to cache the dynamically generated qbxml classes on disk
+# (drastically speeds up initialization of the api instance)
 api = Quickbooks::API.new(:qbpos, :use_disk_cache => true)
 
 # to increase logging
@@ -18,7 +19,7 @@ API INTROSPECTION
 ------------------------------------------------------------------------------
 
 # returns all available wrapper classes
-api.qb_classes
+api.qbxml_classes
 
 # returns the top level wrapper class for the api
 api.container
@@ -32,6 +33,9 @@ wrapper_class.template(true)
 # returns all the supported fields for the wrapper class
 wrapper_class.attribute_names
 
+# returns the qbxml template used to generate the wrapper class
+wrapper_class.xml_template
+
 
 QBXML TO RUBY
 ------------------------------------------------------------------------------
@@ -40,9 +44,12 @@ QBXML TO RUBY
 o = api.qbxml_to_obj(qbxml)
 
 # convert qbxml object to hash
-o.attributes
+o.inner_attributes
 
 # same as above but includes the top level containers
+o.attributes
+
+# retrieves attributes from nested objects
 o.attributes(true)
 
 # directly convert raw qbxml to a hash

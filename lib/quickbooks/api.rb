@@ -1,5 +1,7 @@
 class Quickbooks::API
   include Quickbooks::Support
+  include Quickbooks::Support::API
+  include Quickbooks::Support::QBXML
 
 attr_reader :dtd_parser, :qbxml_parser, :schema_type
 
@@ -18,7 +20,7 @@ def initialize(schema_type = nil, opts = {})
   load_qb_classes(use_disk_cache)
 
   # load the container class template into memory (significantly speeds up wrapping of partial data hashes)
-  get_container_class.template(true)
+  get_container_class.template(true, use_disk_cache)
 end
 
 def container
@@ -67,13 +69,22 @@ def hash_to_qbxml(data)
   hash_to_obj(data).to_qbxml.to_s
 end
 
+# Disk Cache
+
+def clear_disk_cache(rebuild = false)
+  qbxml_cache = Dir["#{get_disk_cache_path}/*.rb"]
+  template_cache = Dir["#{get_template_cache_path}/*.yml"]
+  File.delete(*(qbxml_cache + template_cache))
+  load_qb_classes(rebuild)
+end
+
 
 private 
 
 
 def load_qb_classes(use_disk_cache = false)
   if use_disk_cache
-    disk_cache = Dir["#{get_disk_cache_path}/*"]
+    disk_cache = Dir["#{get_disk_cache_path}/*.rb"]
     if disk_cache.empty?
       log.info "Warning: on disk schema cache is empty, rebuilding..."
       rebuild_schema_cache(false, true)

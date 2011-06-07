@@ -7,6 +7,7 @@ require 'active_support/core_ext'
 module Quickbooks; end
 
 require 'quickbooks/support'
+require 'quickbooks/support/api'
 require 'quickbooks/support/logger'
 require 'quickbooks/support/qbxml'
 require 'quickbooks/support/class_builder'
