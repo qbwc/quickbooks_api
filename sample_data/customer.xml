@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<QBPOSXML>
+    <QBPOSXMLMsgsRs>
+        <CustomerQueryRs requestID="1" retCount="1" statusCode="0" statusMessage="Status OK" statusSeverity="Info">
+            <CustomerRet>
+                <ListID>123</ListID>
+                <TimeCreated>2011-02-17T01:28:34-05:00</TimeCreated>
+                <TimeModified>2011-03-13T21:33:15-05:00</TimeModified>
+                <AccountBalance>0.00</AccountBalance>
+                <AccountLimit>0.00</AccountLimit>
+                <CompanyName>Work</CompanyName>
+                <CustomerDiscPercent>0.00</CustomerDiscPercent>
+                <CustomerDiscType>None</CustomerDiscType>
+                <DefaultShipAddress>Bill To Address</DefaultShipAddress>
+                <EMail>my@email.com</EMail>
+                <FirstName>Bob</FirstName>
+                <FullName>Fischer</FullName>
+                <IsAcceptingChecks>False</IsAcceptingChecks>
+                <IsNoShipToBilling>False</IsNoShipToBilling>
+                <IsOkToEMail>False</IsOkToEMail>
+                <IsRewardsMember>False</IsRewardsMember>
+                <IsUsingChargeAccount>False</IsUsingChargeAccount>
+                <IsUsingWithQB>False</IsUsingWithQB>
+                <LastName>Fischer</LastName>
+                <Notes></Notes>
+                <PastDue>0.00</PastDue>
+                <PriceLevelNumber>1</PriceLevelNumber>
+                <StoreExchangeStatus>Modified</StoreExchangeStatus>
+            </CustomerRet>
+        </CustomerQueryRs>
+    </QBPOSXMLMsgsRs>
+</QBPOSXML>
