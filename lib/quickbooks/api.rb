@@ -4,20 +4,26 @@ class Quickbooks::API
   include Quickbooks::Support::QBXML
 
 attr_reader :dtd_parser, :qbxml_parser, :schema_type
+@@instances = {}
 
 def initialize(schema_type = nil, opts = {})
-  @schema_type = schema_type
-  use_disk_cache, log_level = opts.values_at(:use_disk_cache, :log_level)
+  unless @@instances[schema_type]
+    @schema_type = schema_type
+    use_disk_cache, log_level = opts.values_at(:use_disk_cache, :log_level)
 
-  unless valid_schema_type?
-    raise(ArgumentError, "schema type required: #{valid_schema_types.inspect}") 
+    unless valid_schema_type?
+      raise(ArgumentError, "schema type required: #{valid_schema_types.inspect}") 
+    end
+
+    @dtd_file = get_dtd_file
+    @dtd_parser = DtdParser.new(schema_type)
+    @qbxml_parser = QbxmlParser.new(schema_type)
+
+    load_qb_classes(use_disk_cache)
+    @@instances[schema_type] = self
   end
 
-  @dtd_file = get_dtd_file
-  @dtd_parser = DtdParser.new(schema_type)
-  @qbxml_parser = QbxmlParser.new(schema_type)
-
-  load_qb_classes(use_disk_cache)
+  @@instances[schema_type]
 end
 
 def container
