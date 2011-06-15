@@ -7,23 +7,24 @@ attr_reader :dtd_parser, :qbxml_parser, :schema_type
 @@instances = {}
 
 def initialize(schema_type = nil, opts = {})
-  unless @@instances[schema_type]
-    @schema_type = schema_type
-    use_disk_cache, log_level = opts.values_at(:use_disk_cache, :log_level)
+  @schema_type = schema_type
+  use_disk_cache, log_level = opts.values_at(:use_disk_cache, :log_level)
 
-    unless valid_schema_type?
-      raise(ArgumentError, "schema type required: #{valid_schema_types.inspect}") 
-    end
-
-    @dtd_file = get_dtd_file
-    @dtd_parser = DtdParser.new(schema_type)
-    @qbxml_parser = QbxmlParser.new(schema_type)
-
-    load_qb_classes(use_disk_cache)
-    @@instances[schema_type] = self
+  unless valid_schema_type?
+    raise(ArgumentError, "schema type required: #{valid_schema_types.inspect}") 
   end
 
-  @@instances[schema_type]
+  @dtd_file = get_dtd_file
+  @dtd_parser = DtdParser.new(schema_type)
+  @qbxml_parser = QbxmlParser.new(schema_type)
+
+  load_qb_classes(use_disk_cache)
+  @@instances[schema_type] = self
+end
+
+# returns the last created api instance
+def self.[](schema_type)
+  @@instances[schema_type] || self.new(schema_type)
 end
 
 def container
@@ -35,10 +36,12 @@ def qbxml_classes
 end
 
 def find(class_name)
+  class_name = class_name.to_s
   cached_classes.find { |c| to_attribute_name(c) == class_name }
 end
 
 def grep(keyword)
+  keyword = keyword.to_s
   cached_classes.select { |c| to_attribute_name(c).include?(keyword) }
 end
 
@@ -77,7 +80,7 @@ def hash_to_obj(data)
 end
 
 def hash_to_qbxml(data)
-  hash_to_obj(data).to_qbxml.to_s
+  hash_to_obj(data).to_qbxml
 end
 
 # Disk Cache

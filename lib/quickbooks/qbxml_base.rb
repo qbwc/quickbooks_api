@@ -77,7 +77,7 @@ def to_qbxml
 
   log.debug "to_qbxml#xml_nodes_size: #{xml_nodes.size}"
   root.children = xml_nodes.join('')
-  root
+  root.to_s
 end
 
 
