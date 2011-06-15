@@ -14,6 +14,12 @@ api = Quickbooks::API.new(:qbpos, :use_disk_cache => true)
 # to increase logging
 api = Quickbooks::API.new(:qbpos, :log_level => 0)
 
+# clear the disk class/template disk cache
+api.clear_disk_cache
+
+# same as above but rebuilds the cache as well
+api.clear_disk_cache(true)
+
 
 API INTROSPECTION
 ------------------------------------------------------------------------------
@@ -23,6 +29,12 @@ api.qbxml_classes
 
 # returns the top level wrapper class for the api
 api.container
+
+# find specific qbxml class by name
+api.find('customer_mod_rq')
+
+# find all qbxml classes that contain a pattern
+api.grep('_mod_rq')
 
 # returns a hash of all the data types for a wrapper class
 wrapper_class.template

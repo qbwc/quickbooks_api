@@ -81,9 +81,9 @@ def to_qbxml
 end
 
 
-def self.template(recursive = false, use_disk_cache = false)
+def self.template(recursive = false, use_disk_cache = false, reload = false)
   if recursive
-    @template ||= load_template(true, use_disk_cache)
+    @template = (!reload && @template) || load_template(true, use_disk_cache)
   else build_template(false)
   end
 end

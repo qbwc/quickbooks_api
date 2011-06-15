@@ -18,9 +18,6 @@ def initialize(schema_type = nil, opts = {})
   @qbxml_parser = QbxmlParser.new(schema_type)
 
   load_qb_classes(use_disk_cache)
-
-  # load the container class template into memory (significantly speeds up wrapping of partial data hashes)
-  get_container_class.template(true, use_disk_cache)
 end
 
 def container
@@ -29,6 +26,14 @@ end
 
 def qbxml_classes
   cached_classes
+end
+
+def find(class_name)
+  cached_classes.find { |c| to_attribute_name(c) == class_name }
+end
+
+def grep(keyword)
+  cached_classes.select { |c| to_attribute_name(c).include?(keyword) }
 end
 
 # QBXML 2 RUBY
@@ -94,6 +99,10 @@ def load_qb_classes(use_disk_cache = false)
   else
     rebuild_schema_cache(false, false)
   end
+
+  # load the container class template into memory (significantly speeds up wrapping of partial data hashes)
+  get_container_class.template(true, use_disk_cache, use_disk_cache)
+  true
 end
 
 # rebuilds schema cache in memory and writes to disk if desired
@@ -112,8 +121,6 @@ def dump_cached_classes
     end
   end
 end
-
-# class methods
 
 def self.log
   @@log ||= Logger.new(STDOUT, DEFAULT_LOG_LEVEL)
