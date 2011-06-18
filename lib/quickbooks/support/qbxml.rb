@@ -28,4 +28,16 @@ module Quickbooks::Support::QBXML
     qbxml.join('')
   end
 
+  def set_required_attributes(xml_obj)
+    required_attributes = get_required_xml_attributes
+    xml_obj.attributes.each do |a,v|
+      if required_attributes.keys.include?(a)
+        xml_obj.set_attribute(a, required_attributes[a])
+      else
+        xml_obj.remove_attribute(a)
+      end
+    end
+    xml_obj
+  end
+
 end

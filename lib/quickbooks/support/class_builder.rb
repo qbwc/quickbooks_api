@@ -11,9 +11,10 @@ def add_strict_attribute(klass, attr_name, type)
 
     def #{attr_name}=(obj)
       expected_type = self.class.#{attr_name}_type
-      if obj.class == expected_type
+      case obj 
+      when expected_type, Array
         @#{attr_name} = obj
-      elsif obj.is_a?(Hash)
+      when Hash
         @#{attr_name} = #{type}.new(obj)
       else
         raise(TypeError, "expecting an object of type \#{expected_type}") 
@@ -25,8 +26,8 @@ end
 
 def add_casting_attribute(klass, attr_name, type)
   type_casting_proc = klass::QB_TYPE_CONVERSION_MAP[type]
-  type = type_casting_proc.call(nil).class
-  add_attribute_type(klass, attr_name, type)
+  ruby_type = type_casting_proc.call(nil).class
+  add_attribute_type(klass, attr_name, ruby_type)
 
   eval <<-class_body
   class #{klass}

@@ -9,10 +9,16 @@ module Quickbooks::Support::API
     :qb    => {:dtd_file => "qbxmlops70.xml", 
                :namespace => QBXML, 
                :container_class => lambda { Quickbooks::QBXML::QBXML },
+               :required_xml_attributes => {
+                 "onError" => "stopOnError"
+               }
               }.freeze,
     :qbpos => {:dtd_file => "qbposxmlops30.xml", 
                :namespace => QBPOSXML, 
                :container_class => lambda { Quickbooks::QBPOSXML::QBPOSXML },
+               :required_xml_attributes => {
+                 "onError" => "stopOnError"
+               }
               }.freeze,
   }.freeze
 
@@ -46,6 +52,10 @@ private
 
   def get_template_cache_path
     "#{RUBY_SCHEMA_PATH}/#{schema_type.to_s}/templates"
+  end
+
+  def get_required_xml_attributes
+    SCHEMA_MAP[schema_type][:required_xml_attributes]
   end
 
   # fetches all the dynamically generated schema classes

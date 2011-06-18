@@ -36,6 +36,7 @@ def build_qbxml_class(xml_obj)
   unless qbxml_class_defined?(obj_name) 
     klass = Class.new(QbxmlBase)
     get_schema_namespace.const_set(obj_name, klass) 
+    xml_obj = set_required_attributes(xml_obj)
     add_xml_template(klass, xml_obj.to_xml)
   else
     klass = get_schema_namespace.const_get(obj_name)

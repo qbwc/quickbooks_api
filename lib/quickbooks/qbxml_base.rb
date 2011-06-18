@@ -6,38 +6,22 @@ class Quickbooks::QbxmlBase
   extend  Quickbooks::Support
   extend  Quickbooks::Support::API
 
-#QB_TYPE_CONVERSION_MAP= {
-  #"AMTTYPE"          => lambda {|d| String(d)},
-  #"BOOLTYPE"         => lambda {|d| String(d)},
-  #"DATETIMETYPE"     => lambda {|d| Date.parse(d)},
-  #"DATETYPE"         => lambda {|d| Date.parse(d)},
-  #"ENUMTYPE"         => lambda {|d| String(d)},
-  #"FLOATTYPE"        => lambda {|d| String(d)},
-  #"GUIDTYPE"         => lambda {|d| String(d)},
-  #"IDTYPE"           => lambda {|d| String(d)},
-  #"INTTYPE"          => lambda {|d| Integer(d)},
-  #"PERCENTTYPE"      => lambda {|d| Float(d)},
-  #"PRICETYPE"        => lambda {|d| Float(d)},
-  #"QUANTYPE"         => lambda {|d| Integer(d)},
-  #"STRTYPE"          => lambda {|d| String(d)},
-  #"TIMEINTERVALTYPE" => lambda {|d| String(d)}
-#}
-
 QB_TYPE_CONVERSION_MAP= {
-  "AMTTYPE"          => lambda {|d| String(d)},
-  "BOOLTYPE"         => lambda {|d| String(d)},
-  "DATETIMETYPE"     => lambda {|d| String(d)},
-  "DATETYPE"         => lambda {|d| String(d)},
-  "ENUMTYPE"         => lambda {|d| String(d)},
-  "FLOATTYPE"        => lambda {|d| String(d)},
-  "GUIDTYPE"         => lambda {|d| String(d)},
-  "IDTYPE"           => lambda {|d| String(d)},
-  "INTTYPE"          => lambda {|d| String(d)},
-  "PERCENTTYPE"      => lambda {|d| String(d)},
-  "PRICETYPE"        => lambda {|d| String(d)},
-  "QUANTYPE"         => lambda {|d| String(d)},
-  "STRTYPE"          => lambda {|d| String(d)},
-  "TIMEINTERVALTYPE" => lambda {|d| String(d)}
+  "AMTTYPE"          => lambda {|d| d ? Float(d) : 0.0 },
+  #"BOOLTYPE"         => lambda {|d| d ? (d == 'True' ? true : false) : false },
+  "BOOLTYPE"         => lambda {|d| d ? String(d) : '' },
+  "DATETIMETYPE"     => lambda {|d| d ? Time.parse(d).xmlschema : Time.now.xmlschema },
+  "DATETYPE"         => lambda {|d| d ? Date.parse(d).xmlschema : Date.today.xmlschema },
+  "ENUMTYPE"         => lambda {|d| d ? String(d) : ''},
+  "FLOATTYPE"        => lambda {|d| d ? Float(d) : 0.0},
+  "GUIDTYPE"         => lambda {|d| d ? String(d) : ''},
+  "IDTYPE"           => lambda {|d| d ? String(d) : ''},
+  "INTTYPE"          => lambda {|d| d ? Integer(d) : 0 },
+  "PERCENTTYPE"      => lambda {|d| d ? Float(d) : 0.0 },
+  "PRICETYPE"        => lambda {|d| d ? Float(d) : 0.0 },
+  "QUANTYPE"         => lambda {|d| d ? Integer(d.to_i) : 0 },
+  "STRTYPE"          => lambda {|d| d ? String(d) : ''},
+  "TIMEINTERVALTYPE" => lambda {|d| d ? String(d) : ''}
 }
 
 
@@ -101,7 +85,9 @@ def inner_attributes
     end
   
   values = top_level_attrs.values.compact
-  if values.size > 1 || values.first.is_a?(Array)
+  if values.empty?
+    {}
+  elsif values.size > 1 || values.first.is_a?(Array)
     attributes
   else
     values.first.inner_attributes

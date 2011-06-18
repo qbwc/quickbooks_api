@@ -72,7 +72,7 @@ def hash_to_obj(data)
   key = data.keys.first
   value = data[key]
 
-  key_path = find_nested_key(container.template(true), key)
+  key_path = find_nested_key(container.template(true), key.to_s)
   raise(RuntimeError, "#{key} class not found in api template") unless key_path
 
   wrapped_data = build_hash_wrapper(key_path, value)
