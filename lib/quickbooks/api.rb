@@ -40,9 +40,13 @@ def find(class_name)
   cached_classes.find { |c| to_attribute_name(c) == class_name }
 end
 
-def grep(keyword)
-  keyword = keyword.to_s
-  cached_classes.select { |c| to_attribute_name(c).include?(keyword) }
+def grep(pattern)
+  case patthern
+  when Regex
+    cached_classes.select { |c| to_attribute_name(c).match(pattern) }
+  when String
+    cached_classes.select { |c| to_attribute_name(c).include?(pattern) }
+  end
 end
 
 # QBXML 2 RUBY

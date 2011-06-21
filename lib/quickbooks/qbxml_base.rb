@@ -78,19 +78,23 @@ def self.attribute_names
 end
 
 
-def inner_attributes
-  top_level_attrs = \
-    self.class.attribute_names.inject({}) do |h, m|
-      h[m] = self.send(m); h
-    end
-  
-  values = top_level_attrs.values.compact
+def inner_attributes(parent = nil)
+  attrs = attributes(false)
+  values = attrs.values.compact
+
   if values.empty?
     {}
-  elsif values.size > 1 || values.first.is_a?(Array)
+  elsif values.first.is_a?(Array)
     attributes
+  elsif values.size > 1
+    parent.attributes
   else
-    values.first.inner_attributes
+    first_val = values.first
+    if first_val.respond_to?(:inner_attributes)
+      first_val.inner_attributes(self)
+    else
+      parent.attributes
+    end
   end
 end
 
