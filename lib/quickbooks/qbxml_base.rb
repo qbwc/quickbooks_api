@@ -29,6 +29,15 @@ def initialize(params = nil)
   return unless params.is_a?(Hash)
   params.each do |k,v|
     if self.respond_to?(k)
+      expected_type = self.class.send("#{k}_type")
+      v = \
+        case v
+        when Hash
+          expected_type.new(v)
+        when Array
+          v.inject([]) { |a,i| a << expected_type.new(i) }
+        else v
+        end
       self.send("#{k}=", v)
     end
   end
@@ -48,7 +57,7 @@ def to_qbxml
     log.debug "to_qbxml#attr_name: #{attr_name}"
 
     val = self.send(attr_name)
-    next unless val
+    next unless val && !val.blank?
 
     case val
     when Array
@@ -145,20 +154,21 @@ end
 
 def build_qbxml_nodes(node, val)
   val.inject([]) do |a, v|
-    n = clone_qbxml_node(node,v)
+    n = \
+      case v
+      when Quickbooks::QbxmlBase
+        v.to_qbxml
+      else
+        clone_qbxml_node(node,v)
+      end
     a << n
   end
 end
 
 def clone_qbxml_node(node, val)
   n = node.clone
-  n.children = \
-    case val
-    when Quickbooks::QbxmlBase
-      val.to_qbxml 
-    else 
-      val.to_s
-    end; n
+  n.children = val.to_s
+  n
 end
 
 # qbxml class templates

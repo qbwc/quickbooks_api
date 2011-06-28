@@ -41,8 +41,8 @@ def find(class_name)
 end
 
 def grep(pattern)
-  case patthern
-  when Regex
+  case pattern
+  when Regexp
     cached_classes.select { |c| to_attribute_name(c).match(pattern) }
   when String
     cached_classes.select { |c| to_attribute_name(c).include?(pattern) }

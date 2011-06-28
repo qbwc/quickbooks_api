@@ -14,8 +14,6 @@ def add_strict_attribute(klass, attr_name, type)
       case obj 
       when expected_type, Array
         @#{attr_name} = obj
-      when Hash
-        @#{attr_name} = #{type}.new(obj)
       else
         raise(TypeError, "expecting an object of type \#{expected_type}") 
       end

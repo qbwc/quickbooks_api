@@ -74,8 +74,7 @@ def parse_leaf_node_data(xml_obj)
 end
 
 def fetch_qbxml_class_instance(xml_obj)
-  instance = get_schema_namespace.const_get(xml_obj.name).new
-  instance
+  get_schema_namespace.const_get(xml_obj.name).new
 end
 
 def set_attribute_value(instance, attr_name, data)
