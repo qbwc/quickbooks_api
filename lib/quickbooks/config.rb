@@ -27,20 +27,8 @@ module Quickbooks::Config
 
 private
 
-  def disk_cache_path
-    "#{RUBY_SCHEMA_PATH}/#{schema_type.to_s}"
-  end
-
-  def template_cache_path
-    "#{RUBY_SCHEMA_PATH}/#{schema_type.to_s}/templates"
-  end
-
   def container_class
     schema_namespace.const_get(SCHEMA_MAP[schema_type][:container_class])
-  end
-
-  def container_template_path
-    "#{template_cache_path}/#{underscore(container_class)}.yml"
   end
 
   def dtd_file
@@ -74,14 +62,6 @@ private
 
   def valid_schema_types
     SCHEMA_MAP.keys
-  end
-
-  def disk_cache_path(schema_type)
-    "#{RUBY_SCHEMA_PATH}/#{schema_type.to_s}"
-  end
-
-  def template_cache_path(schema_type)
-    "#{RUBY_SCHEMA_PATH}/#{schema_type.to_s}/templates"
   end
 
 end

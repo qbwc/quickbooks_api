@@ -4,29 +4,32 @@ describe Quickbooks::API do
 
   describe "interface" do
 
-    it "should initialize" do
+    it "should initialize api instance" do
     end
 
-    it "should create ruby wrapper objects for any qbxml input" do
+    it "should return cached instance for consecutive api requests" do
     end
 
-    it "should convert ruby wrapper objects back to qbxml" do
+    it "should create qbxml object from qbxml input" do
+    end
+
+    it "should create qbxml object from hash input" do
+    end
+
+    it "should convert qbxml input to hash output" do
+    end
+
+    it "should convert hash input to qbxml output" do
     end
 
   end
 
   describe "helpers" do
 
-    it "should load the schema" do
+    it "should load the schema into memory during initialization" do
     end
 
-    it "should rebuild the schema" do
-    end
-
-    it "should write the schema to disk" do
-    end
-
-    it "should find a nested qbxml hash" do
+    it "should load the container template into memory before initialization" do
     end
 
   end

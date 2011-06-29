@@ -1,6 +1,5 @@
 - tests
 - support for node type constraints and validation
 - hash to obj doesn't work when converting from an inner level hash ex. 'customer_mod_rq'
-- disk cache rebuild breaks in rails console
 - add processing instruction to node set <?qbposxml version="3.0"?>
 - handle node attributes properly

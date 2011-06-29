@@ -1,5 +1,3 @@
-require 'ruby2ruby' # must be version 1.2.1 of ruby2ruby
-
 class Quickbooks::API
   include Quickbooks::Logger
   include Quickbooks::Config
@@ -13,13 +11,10 @@ class Quickbooks::API
     self.class.check_schema_type!(schema_type)
     @schema_type = schema_type
 
-    use_disk_cache, log_level = opts.values_at(:use_disk_cache, :log_level)
-    Quickbooks::Log.init(log_level)
-
     @dtd_parser = Quickbooks::DtdParser.new(schema_type)
     @qbxml_parser = Quickbooks::QbxmlParser.new(schema_type)
 
-    load_qb_classes(use_disk_cache)
+    load_qb_classes
     @@instances[schema_type] = self
   end
 
@@ -35,19 +30,6 @@ class Quickbooks::API
     @@instances[schema_type] || new(schema_type, opts)
   end
 
-  # disk cache ops
-  #
-  def self.clear_disk_cache(schema_type = nil, rebuild = false)
-    check_schema_type!(schema_type)
-    @@instances.delete(schema_type) 
-
-    qbxml_cache = Dir["#{disk_cache_path(schema_type)}/*.rb"]
-    template_cache = Dir["#{template_cache_path(schema_type)}/*.yml"]
-    File.delete(*(qbxml_cache + template_cache))
-
-    new(schema_type, :use_disk_cache => rebuild)
-  end
-
   # user friendly api decorators. Not used anywhere else.
   # 
   def container
@@ -61,28 +43,17 @@ class Quickbooks::API
   # api introspection
   #
   def find(class_name)
-    class_name = class_name.to_s
-    cached_classes.find { |c| underscore(c) == class_name }
+    cached_classes.find { |c| underscore(c) == class_name.to_s }
   end
 
   def grep(pattern)
-    case pattern
-    when Regexp
-      cached_classes.select { |c| underscore(c).match(pattern) }
-    when String
-      cached_classes.select { |c| underscore(c).include?(pattern) }
-    end
+    cached_classes.select { |c| underscore(c).match(/#{pattern}/) }
   end
 
   # QBXML 2 RUBY
 
   def qbxml_to_obj(qbxml)
-    case qbxml
-    when IO
-      qbxml_parser.parse_file(qbxml)
-    else
-      qbxml_parser.parse(qbxml)
-    end
+    qbxml_parser.parse(qbxml)
   end
 
   def qbxml_to_hash(qbxml, include_container = false)
@@ -97,9 +68,7 @@ class Quickbooks::API
   # RUBY 2 QBXML
 
   def hash_to_obj(data)
-    key = data.keys.first
-    value = data[key]
-
+    key, value = data.first
     key_path = container_class.template(true).path_to_nested_key(key.to_s)
     raise(RuntimeError, "#{key} class not found in api template") unless key_path
 
@@ -113,39 +82,10 @@ class Quickbooks::API
 
 private 
 
-  def load_qb_classes(use_disk_cache = false)
-    if use_disk_cache
-      disk_cache = Dir["#{disk_cache_path}/*.rb"]
-      if disk_cache.empty?
-        log.info "Warning: on disk schema cache is empty, rebuilding..."
-        rebuild_schema_cache(false)
-        dump_cached_classes
-      else
-        disk_cache.each {|file| require file }
-      end
-    else
-      rebuild_schema_cache(false)
-    end
-
-    load_full_container_template(use_disk_cache)
+  def load_qb_classes
+    rebuild_schema_cache(false)
+    load_full_container_template
     container_class
-  end
-
-  # load the recursive container class template into memory (significantly
-  # speeds up wrapping of partial data hashes)
-  # 
-  def load_full_container_template(use_disk_cache = false)
-    if use_disk_cache 
-      if File.exist?(container_template_path)
-        container_class.instance_variable_set( '@template', YAML.load(File.read(container_template_path)) )
-      else
-        log.info "Warning: on disk template is missing, rebuilding..."
-        container_class.template(true)
-        dump_container_template
-      end
-    else
-      container_class.template(true)
-    end
   end
 
   # rebuilds schema cache in memory
@@ -154,22 +94,11 @@ private
     dtd_parser.parse_file(dtd_file) if (cached_classes.empty? || force)
   end
 
-  # writes cached classes to disk
-  #
-  def dump_cached_classes
-    cached_classes.each do |c|  
-      File.open("#{disk_cache_path}/#{underscore(c)}.rb", 'w') do |f|
-        f << Ruby2Ruby.translate(c)
-      end
-    end
-  end
-
-  # writes container template to disk
-  #
-  def dump_container_template
-    File.open(container_template_path, 'w') do |f|
-      f << container_class.template(true).to_yaml
-    end
+  # load the recursive container class template into memory (significantly
+  # speeds up wrapping of partial data hashes)
+  # 
+  def load_full_container_template(use_disk_cache = false)
+      container_class.template(true)
   end
 
 end

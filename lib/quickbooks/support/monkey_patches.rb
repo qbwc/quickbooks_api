@@ -6,8 +6,8 @@ class Hash
       if k == key
         return path
       elsif v.is_a? Hash
-        nested_val = path_to_nested_key(v, key)
-        nested_val ? (return path + nested_val) : nil
+        nested_path = v.path_to_nested_key(key)
+        nested_path ? (return path + nested_path) : nil
       end
     end
     return nil
@@ -15,10 +15,11 @@ class Hash
 
   def self.nest(path, value)
     hash_constructor = lambda { |h, k| h[k] = Hash.new(&hash_constructor) }
+    nested_hash = Hash.new(&hash_constructor)
 
-    wrapped_data = Hash.new(&hash_constructor)
-    path.inject(wrapped_data) { |h, k| k == path.last ? h[k] = value: h[k] }
-    wrapped_data
+    last_key = path.last
+    path.inject(nested_hash) { |h, k| (k == last_key) ? h[k] = value : h[k] }
+    nested_hash
   end
 
 end
