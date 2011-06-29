@@ -1,0 +1,52 @@
+<QBPOSXML>
+    <QBPOSXMLMsgsRs>
+        <VendorQueryRs retCount="4" statusCode="0" statusMessage="Status OK" statusSeverity="Info">
+            <VendorRet>
+                <ListID>-7153004882964872959</ListID>
+                <CompanyName>Yellow Cups Ltd</CompanyName>
+                <IsInactive>False</IsInactive>
+                <StoreExchangeStatus>Modified</StoreExchangeStatus>
+                <TermsDiscount>0.00</TermsDiscount>
+                <TermsDiscountDays>0</TermsDiscountDays>
+                <TermsNetDays>0</TermsNetDays>
+                <EMail>vendor@gmail.com</EMail>
+                <FirstName>James</FirstName>
+                <Phone>123-123-1255</Phone>
+                <VendorCode>AB123</VendorCode>
+                <TimeCreated>2011-06-16T11:04:02-05:00</TimeCreated>
+                <TimeModified>2011-06-16T11:04:02-05:00</TimeModified>
+            </VendorRet>
+            <VendorRet>
+                <ListID>-7153003877908971263</ListID>
+                <TimeModified>2011-06-16T11:06:49-05:00</TimeModified>
+                <CompanyName>ViewSonic</CompanyName>
+                <IsInactive>False</IsInactive>
+                <StoreExchangeStatus>Modified</StoreExchangeStatus>
+                <TermsDiscount>0.00</TermsDiscount>
+                <TermsDiscountDays>0</TermsDiscountDays>
+                <TermsNetDays>0</TermsNetDays>
+            </VendorRet>
+            <VendorRet>
+                <ListID>-7134402220023447295</ListID>
+                <TimeModified>2011-06-21T11:25:13-05:00</TimeModified>
+                <CompanyName>Aquafina</CompanyName>
+                <IsInactive>False</IsInactive>
+                <StoreExchangeStatus>Modified</StoreExchangeStatus>
+                <TermsDiscount>0.00</TermsDiscount>
+                <TermsDiscountDays>0</TermsDiscountDays>
+                <TermsNetDays>0</TermsNetDays>
+            </VendorRet>
+            <VendorRet>
+                <ListID>1000000002</ListID>
+                <TimeModified>2011-06-13T12:08:58-05:00</TimeModified>
+                <CompanyName>System</CompanyName>
+                <IsInactive>False</IsInactive>
+                <StoreExchangeStatus>Modified</StoreExchangeStatus>
+                <TermsDiscount>0.00</TermsDiscount>
+                <TermsDiscountDays>0</TermsDiscountDays>
+                <TermsNetDays>0</TermsNetDays>
+                <VendorCode>SYS</VendorCode>
+            </VendorRet>
+        </VendorQueryRs>
+    </QBPOSXMLMsgsRs>
+</QBPOSXML>

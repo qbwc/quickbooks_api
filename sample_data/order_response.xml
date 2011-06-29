@@ -1,0 +1,78 @@
+<QBPOSXML>
+    <QBPOSXMLMsgsRs>
+        <SalesOrderQueryRs retCount="1" statusCode="0" statusMessage="Status OK" statusSeverity="Info">
+            <SalesOrderRet>
+                <Cashier>John</Cashier>
+                <CustomerListID>-7153012137256910591</CustomerListID>
+                <TxnID>-7134405948113780479</TxnID>
+                <TimeCreated>2011-06-16T11:04:02-05:00</TimeCreated>
+                <TimeModified>2011-06-16T11:04:02-05:00</TimeModified>
+                <Associate>Alex</Associate>
+                <BalanceDue>110.00</BalanceDue>
+                <DepositBalance>0.00</DepositBalance>
+                <Discount>5.00</Discount>
+                <DiscountPercent>3.00</DiscountPercent>
+                <ItemsCount>2</ItemsCount>
+                <PriceLevelNumber>1</PriceLevelNumber>
+                <Qty>2.00</Qty>
+                <SalesOrderNumber>123</SalesOrderNumber>
+                <SalesOrderStatusDesc>Open</SalesOrderStatusDesc>
+                <StoreExchangeStatus>Modified</StoreExchangeStatus>
+                <Subtotal>110.00</Subtotal>
+                <TaxAmount>15.00</TaxAmount>
+                <TaxCategory>Local Sales Tax</TaxCategory>
+                <TaxPercentage>16.00</TaxPercentage>
+                <Total>110.00</Total>
+                <TxnDate>2011-06-21</TxnDate>
+                <UnfilledPercent>100.00</UnfilledPercent>
+                <BillingInformation>
+                  <FirstName>Alex</FirstName>
+                  <LastName>Skryl</LastName>
+                </BillingInformation>
+                <ShippingInformation>
+                  <Shipping>0.00</Shipping>
+                </ShippingInformation>
+                <SalesOrderItemRet>
+                  <ListID>-7153010535175388927</ListID>
+                  <TxnLineID>1</TxnLineID>
+                  <Associate>Alex</Associate>
+                  <Commission>0.00</Commission>
+                  <Desc1>Yellow Cup</Desc1>
+                  <Desc2>A Yellow Cup</Desc2>
+                  <Discount>0.00</Discount>
+                  <DiscountPercent>0.00</DiscountPercent>
+                  <ExtendedPrice>11.00</ExtendedPrice>
+                  <ExtendedTax>7.00</ExtendedTax>
+                  <ItemNumber>1111</ItemNumber>
+                  <Price>10.00</Price>
+                  <PriceLevelNumber>1</PriceLevelNumber>
+                  <Size>Larger</Size>
+                  <Qty>1.00</Qty>
+                  <TaxAmount>0.00</TaxAmount>
+                  <TaxCode>Tax</TaxCode>
+                  <TaxPercentage>0.00</TaxPercentage>
+                  <UPC>1111111111111111</UPC>
+                </SalesOrderItemRet>
+                <SalesOrderItemRet>
+                  <ListID>-7153004736919207679</ListID>
+                  <TxnLineID>2</TxnLineID>
+                  <Associate>Alex</Associate>
+                  <Commission>0.00</Commission>
+                  <Desc1>ViewSonic Monitor</Desc1>
+                  <Discount>0.00</Discount>
+                  <DiscountPercent>0.00</DiscountPercent>
+                  <ExtendedPrice>100.00</ExtendedPrice>
+                  <ExtendedTax>0.00</ExtendedTax>
+                  <ItemNumber>2</ItemNumber>
+                  <Price>100.00</Price>
+                  <PriceLevelNumber>1</PriceLevelNumber>
+                  <Qty>1.00</Qty>
+                  <TaxAmount>0.00</TaxAmount>
+                  <TaxCode>Tax</TaxCode>
+                  <TaxPercentage>0.00</TaxPercentage>
+                  <UPC>1111111111111112</UPC>
+                </SalesOrderItemRet>
+            </SalesOrderRet>
+        </SalesOrderQueryRs>
+    </QBPOSXMLMsgsRs>
+</QBPOSXML>

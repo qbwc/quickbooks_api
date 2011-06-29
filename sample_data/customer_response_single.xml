@@ -1,0 +1,23 @@
+<QBPOSXML>
+    <QBPOSXMLMsgsRs>
+        <CustomerQueryRs retCount="3" statusCode="0" statusMessage="Status OK" statusSeverity="Info">
+            <CustomerRet>
+                <ListID>-7153013893932089081</ListID>
+                <TimeModified>2011-06-16T11:03:18-05:00</TimeModified>
+                <AccountBalance>0.00</AccountBalance>
+                <AccountLimit>0.00</AccountLimit>
+                <CustomerDiscPercent>0.00</CustomerDiscPercent>
+                <CustomerDiscType>None</CustomerDiscType>
+                <EMail>alex@gmail.com</EMail>
+                <FirstName>Alex</FirstName>
+                <FullName>Alex Skryl</FullName>
+                <IsAcceptingChecks>True</IsAcceptingChecks>
+                <IsUsingWithQB>False</IsUsingWithQB>
+                <LastName>Skryl</LastName>
+                <Phone>8001112345</Phone>
+                <PriceLevelNumber>1</PriceLevelNumber>
+                <StoreExchangeStatus>Modified</StoreExchangeStatus>
+            </CustomerRet>
+        </CustomerQueryRs>
+    </QBPOSXMLMsgsRs>
+</QBPOSXML>

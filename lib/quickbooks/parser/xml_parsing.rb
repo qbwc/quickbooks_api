@@ -1,4 +1,6 @@
-module Quickbooks::Support::QBXML
+require 'nokogiri'
+
+module Quickbooks::Parser::XMLParsing
 
   XML_DOCUMENT = Nokogiri::XML::Document
   XML_NODE_SET = Nokogiri::XML::NodeSet
@@ -11,15 +13,6 @@ module Quickbooks::Support::QBXML
   COMMENT_END = "-->"
   COMMENT_MATCHER = /\A#{COMMENT_START}.*#{COMMENT_END}\z/
 
-
-  def is_leaf_node?(xml_obj)
-    xml_obj.children.size == 1 && xml_obj.children.first.class == XML_TEXT
-  end
-
-  def qbxml_class_defined?(name)
-    get_schema_namespace.constants.include?(name)
-  end
-
   # remove all comment lines and empty nodes
   def cleanup_qbxml(qbxml)
     qbxml = qbxml.split('\n')
@@ -28,16 +21,14 @@ module Quickbooks::Support::QBXML
     qbxml.join('')
   end
 
-  def set_required_attributes(xml_obj)
-    required_attributes = get_required_xml_attributes
-    xml_obj.attributes.each do |a,v|
-      if required_attributes.keys.include?(a)
-        xml_obj.set_attribute(a, required_attributes[a])
-      else
-        xml_obj.remove_attribute(a)
-      end
-    end
-    xml_obj
+  def leaf_node?(xml_obj)
+    xml_obj.children.size == 1 && xml_obj.children.first.class == XML_TEXT
+  end
+
+  def parse_leaf_node_data(xml_obj)
+    attr_name = underscore(xml_obj)
+    text_node = xml_obj.children.first
+    [attr_name, text_node.text]
   end
 
 end

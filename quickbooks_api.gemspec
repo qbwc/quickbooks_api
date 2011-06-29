@@ -1,6 +1,6 @@
 spec = Gem::Specification.new do |s|
   s.name = 'quickbooks_api'
-  s.version = '0.0.7'
+  s.version = '0.1.0'
 
   s.summary = "QuickBooks XML API"
   s.description = %{A QuickBooks QBXML wrapper for Ruby}
