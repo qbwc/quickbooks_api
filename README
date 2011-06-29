@@ -5,20 +5,20 @@ INITIALIZATION
 # :qb    - Quickbooks
 # :qbpos - Quickbooks Point Of Sale
 
-api = Quickbooks::API.new(:qbpos)
+api = Quickbooks::API.instance(:qbpos)
 
 # to cache the dynamically generated qbxml classes on disk
 # (drastically speeds up initialization of the api instance)
-api = Quickbooks::API.new(:qbpos, :use_disk_cache => true)
+api = Quickbooks::API.instance(:qbpos, :use_disk_cache => true)
 
 # to increase logging
-api = Quickbooks::API.new(:qbpos, :log_level => 0)
+api = Quickbooks::API.instance(:qbpos, :log_level => 0)
 
 # clear the disk class/template disk cache
-api.clear_disk_cache
+Quickbooks::API.clear_disk_cache(:qbpos)
 
-# same as above but rebuilds the cache as well
-api.clear_disk_cache(true)
+# same as above but rebuilds the cache after clearing
+Quickbooks::API.clear_disk_cache(:qbpos, true)
 
 
 API INTROSPECTION
@@ -34,7 +34,7 @@ api.container
 api.find('customer_mod_rq')
 
 # find all qbxml classes that contain a pattern
-api.grep('_mod_rq')
+api.grep(/_mod_rq/)
 
 # returns a hash of all the data types for a wrapper class
 wrapper_class.template
