@@ -70,7 +70,9 @@ private
 # helpers
 
   def fetch_qbxml_class_instance(xml_obj)
-    schema_namespace.const_get(xml_obj.name).new
+    obj = schema_namespace.const_get(xml_obj.name).new
+    obj.xml_attributes = parse_xml_attributes(xml_obj)
+    obj
   end
 
   def set_attribute_value(instance, attr_name, data)

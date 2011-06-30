@@ -31,6 +31,8 @@ class Quickbooks::Parser::QbxmlBase
     "TIMEINTERVALTYPE" => STR_CAST
   }
 
+  attr_accessor :xml_attributes
+
   def initialize(params = nil)
     return unless params.is_a?(Hash)
     params.each do |attr, value|

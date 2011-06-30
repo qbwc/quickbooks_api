@@ -31,4 +31,9 @@ module Quickbooks::Parser::XMLParsing
     [attr_name, text_node.text]
   end
 
+  def parse_xml_attributes(xml_obj)
+    attrs = xml_obj.attributes
+    attrs.inject({}) { |h, (n,v)| h[n] = v.value; h }
+  end
+
 end
