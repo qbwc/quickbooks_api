@@ -38,6 +38,7 @@ class Quickbooks::Parser::QbxmlBase
 
   def initialize(params = nil)
     return unless params.is_a?(Hash)
+    @xml_attributes = {}
     params.each do |attr, value|
       if self.respond_to?(attr)
         expected_attr_type = self.class.send("#{attr}_type")
@@ -83,7 +84,9 @@ class Quickbooks::Parser::QbxmlBase
   end
 
   def attributes(recursive = true)
-    self.class.attribute_names.inject({}) do |h, m|
+    attrs = {}
+    attrs[:xml_attributes] = self.xml_attributes
+    self.class.attribute_names.inject(attrs) do |h, m|
       val = self.send(m)
       if val
         if recursive
