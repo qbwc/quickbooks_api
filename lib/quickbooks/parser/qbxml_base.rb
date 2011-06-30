@@ -32,6 +32,9 @@ class Quickbooks::Parser::QbxmlBase
   }
 
   attr_accessor :xml_attributes
+  class << self
+    attr_accessor :xml_attributes
+  end
 
   def initialize(params = nil)
     return unless params.is_a?(Hash)

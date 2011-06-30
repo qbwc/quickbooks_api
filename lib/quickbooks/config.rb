@@ -7,17 +7,11 @@ module Quickbooks::Config
   SCHEMA_MAP = {
     :qb    => {:dtd_file => "qbxmlops70.xml", 
                :namespace => Quickbooks::QBXML, 
-               :container_class => 'QBXML',
-               :required_xml_attributes => {
-                 "onError" => "stopOnError"
-               }
+               :container_class => 'QBXML'
               }.freeze,
     :qbpos => {:dtd_file => "qbposxmlops30.xml", 
                :namespace => Quickbooks::QBPOSXML, 
-               :container_class => 'QBPOSXML',
-               :required_xml_attributes => {
-                 "onError" => "stopOnError"
-               }
+               :container_class => 'QBPOSXML'
               }.freeze,
   }.freeze
 
@@ -38,11 +32,6 @@ private
   def schema_namespace
     SCHEMA_MAP[schema_type][:namespace]
   end
-
-  def required_xml_attributes
-    SCHEMA_MAP[schema_type][:required_xml_attributes]
-  end
-
 
 # introspection
   

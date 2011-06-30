@@ -18,49 +18,35 @@ module Quickbooks::Parser::XMLGeneration
       val = self.send(attr_name)
       next unless val && val.not_blank?
 
-      case val
-      when Array
-        xml_nodes += build_qbxml_nodes(xml_template, val)
-      else
-        xml_nodes << build_qbxml_node(xml_template, val)
-      end
+      xml_nodes += build_qbxml_nodes(xml_template, val)
       log.debug "to_qbxml#val: #{val}"
     end
 
     log.debug "to_qbxml#xml_nodes_size: #{xml_nodes.size}"
     root.children = xml_nodes.join('')
+    set_xml_attributes!(root)
     root.to_s
   end
 
 private
 
-  def build_qbxml_node(node, val)
-    case val
-    when QbxmlBase
-      val.to_qbxml
-    else
-      node.children = val.to_s
-      node
-    end
-  end
-
   def build_qbxml_nodes(node, val)
+    val = [val].flatten
     val.inject([]) do |a, v|
-      n = \
-        case v
+      a << case v
         when QbxmlBase
           v.to_qbxml
         else
-          clone_qbxml_node(node,v)
+          n = node.clone
+          n.children = val.to_s
+          n
         end
-      a << n
     end
   end
 
-  def clone_qbxml_node(node, val)
-    n = node.clone
-    n.children = val.to_s
-    n
+  def set_xml_attributes!(node)
+    node.attributes.each { |name, value| node.remove_attribute(name) }
+    self.xml_attributes.each { |a,v| node.set_attribute(a, v) }
   end
 
 end

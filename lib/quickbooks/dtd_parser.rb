@@ -31,25 +31,12 @@ private
     unless schema_namespace.const_defined?(obj_name)
       klass = Class.new(Quickbooks::Parser::QbxmlBase)
       schema_namespace.const_set(obj_name, klass) 
-      xml_obj = set_required_attributes(xml_obj)
+      klass.xml_attributes = parse_xml_attributes(xml_obj)
       add_xml_template(klass, xml_obj.to_xml)
     else
       klass = schema_namespace.const_get(obj_name)
     end
     klass
-  end
-
-  #FIXME: build in attribute parsing/support
-  def set_required_attributes(xml_obj)
-    required_attributes = required_xml_attributes
-    xml_obj.attributes.each do |a,v|
-      if required_attributes.keys.include?(a)
-        xml_obj.set_attribute(a, required_attributes[a])
-      else
-        xml_obj.remove_attribute(a)
-      end
-    end
-    xml_obj
   end
 
 end
