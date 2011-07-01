@@ -38,7 +38,9 @@ class Quickbooks::Parser::QbxmlBase
 
   def initialize(params = nil)
     return unless params.is_a?(Hash)
-    @xml_attributes = {}
+    @xml_attributes = params[:xml_attributes] || {}
+    params.delete(:xml_attributes)
+
     params.each do |attr, value|
       if self.respond_to?(attr)
         expected_attr_type = self.class.send("#{attr}_type")

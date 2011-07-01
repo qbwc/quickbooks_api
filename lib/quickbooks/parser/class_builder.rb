@@ -10,13 +10,13 @@ def add_strict_attribute(klass, attr_name, type)
     attr_accessor :#{attr_name}
 
     def #{attr_name}=(obj)
-      expected_type = self.class.#{attr_name}_type
-      case obj 
-      when expected_type, Array
-        @#{attr_name} = obj
-      else
-        raise(TypeError, "expecting an object of type \#{expected_type}") 
+      if self.respond_to?("#{attr_name}_type") 
+        expected_type = self.class.#{attr_name}_type
+        unless obj.is_a?(expected_type) || obj.is_a?(Array) 
+          raise(TypeError, "expecting an object of type \#{expected_type}") 
+        end
       end
+      @#{attr_name} = obj
     end
   end
   class_body
