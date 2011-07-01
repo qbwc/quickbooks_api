@@ -60,17 +60,18 @@ class Quickbooks::Parser::QbxmlBase
   end
 
   def self.attribute_names
-    instance_methods(false).reject { |m| m[-1..-1] == '=' || m =~ /_xml_class/} 
+    instance_methods(false).reject { |m| m == "xml_attributes" || m[-1..-1] == '=' || m =~ /_xml_class/} 
   end
 
   # returns innermost attributes without outer layers of the hash
   #
   def inner_attributes(parent = nil)
     attrs = attributes(false)
+    attrs.delete(:xml_attributes)
     values = attrs.values.compact
 
     if values.empty?
-      {}
+      attributes
     elsif values.first.is_a?(Array)
       attributes
     elsif values.size > 1
@@ -87,7 +88,7 @@ class Quickbooks::Parser::QbxmlBase
 
   def attributes(recursive = true)
     attrs = {}
-    attrs[:xml_attributes] = self.xml_attributes
+    attrs[:xml_attributes] = xml_attributes
     self.class.attribute_names.inject(attrs) do |h, m|
       val = self.send(m)
       if val

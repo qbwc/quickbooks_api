@@ -57,11 +57,10 @@ class Quickbooks::API
   end
 
   def qbxml_to_hash(qbxml, include_container = false)
-    qb_obj = qbxml_to_obj(qbxml)
-    unless include_container
-      qb_obj.inner_attributes
+    if include_container
+      qbxml_to_obj(qbxml).attributes
     else
-      qb_obj.attributes
+      qbxml_to_obj(qbxml).inner_attributes
     end
   end
 
