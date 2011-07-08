@@ -15,8 +15,7 @@ class Quickbooks::Parser::QbxmlBase
 
   QB_TYPE_CONVERSION_MAP= {
     "AMTTYPE"          => FLOAT_CAST,
-    #"BOOLTYPE"         => BOOL_CAST,
-    "BOOLTYPE"         => STR_CAST,
+    "BOOLTYPE"         => BOOL_CAST,
     "DATETIMETYPE"     => TIME_CAST,
     "DATETYPE"         => DATE_CAST,
     "ENUMTYPE"         => STR_CAST,
@@ -91,7 +90,7 @@ class Quickbooks::Parser::QbxmlBase
     attrs[:xml_attributes] = xml_attributes
     self.class.attribute_names.inject(attrs) do |h, m|
       val = self.send(m)
-      if val
+      if !val.nil?
         if recursive
           h[m] = case val
             when QBXML_BASE
