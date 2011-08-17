@@ -67,7 +67,7 @@ class Quickbooks::API
   # RUBY 2 QBXML
 
   def hash_to_obj(data)
-    key, value = data.detect { |name, value| name != :xml_attributes }
+    key, value = data.detect { |name, value| name != 'xml_attributes' && name != :xml_attributes }
     key_path = container_class.template(true).path_to_nested_key(key.to_s)
     raise(RuntimeError, "#{key} class not found in api template") unless key_path
 

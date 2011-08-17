@@ -1,20 +1,20 @@
 class Hash
 
   def path_to_nested_key(key)
-    self.each do |k,v|
+    each do |k,v|
       path = [k]
       if k == key
         return path
       elsif v.is_a? Hash
         nested_path = v.path_to_nested_key(key)
-        nested_path ? (return path + nested_path) : nil
+        return (path + nested_path) if nested_path
       end
     end
     return nil
   end
 
   def self.nest(path, value)
-    hash_constructor = lambda { |h, k| h[k] = Hash.new(&hash_constructor) }
+    hash_constructor = Proc.new { |h, k| h[k] = Hash.new(&hash_constructor) }
     nested_hash = Hash.new(&hash_constructor)
 
     last_key = path.last

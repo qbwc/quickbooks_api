@@ -8,7 +8,7 @@ end
 
 class Quickbooks::Log
   private_class_method :new
-  LOG_LEVEL = 1
+  LOG_LEVEL = 6
 
   def self.init(log_level)
     @log = BufferedLogger.new(STDOUT, log_level || LOG_LEVEL)

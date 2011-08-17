@@ -32,15 +32,15 @@ private
 
   def build_qbxml_nodes(node, val)
     val = [val].flatten
-    val.inject([]) do |a, v|
-      a << case v
-        when QbxmlBase
-          v.to_qbxml
-        else
-          n = node.clone
-          n.children = val.to_s
-          n
-        end
+    val.map do |v|
+      case v
+      when QbxmlBase
+        v.to_qbxml
+      else
+        n = node.clone
+        n.children = v.to_s
+        n.to_s
+      end
     end
   end
 

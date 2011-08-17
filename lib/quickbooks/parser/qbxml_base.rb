@@ -6,12 +6,12 @@ class Quickbooks::Parser::QbxmlBase
 
   QBXML_BASE = Quickbooks::Parser::QbxmlBase
 
-  FLOAT_CAST = lambda {|d| d ? Float(d) : 0.0}                                  
-  BOOL_CAST  = lambda {|d| d ? (d == 'True' ? true : false) : false }          
-  DATE_CAST  = lambda {|d| d ? Date.parse(d).xmlschema : Date.today.xmlschema } 
-  TIME_CAST  = lambda {|d| d ? Time.parse(d).xmlschema : Time.now.xmlschema }   
-  INT_CAST   = lambda {|d| d ? Integer(d.to_i) : 0 }                                 
-  STR_CAST   = lambda {|d| d ? String(d) : ''}                                  
+  FLOAT_CAST = Proc.new {|d| d ? Float(d) : 0.0}                                  
+  BOOL_CAST  = Proc.new {|d| d ? (d == 'True' ? true : false) : false }          
+  DATE_CAST  = Proc.new {|d| d ? Date.parse(d).xmlschema : Date.today.xmlschema } 
+  TIME_CAST  = Proc.new {|d| d ? Time.parse(d).xmlschema : Time.now.xmlschema }   
+  INT_CAST   = Proc.new {|d| d ? Integer(d.to_i) : 0 }                                 
+  STR_CAST   = Proc.new {|d| d ? String(d) : ''}                                  
 
   QB_TYPE_CONVERSION_MAP= {
     "AMTTYPE"          => FLOAT_CAST,
@@ -37,7 +37,8 @@ class Quickbooks::Parser::QbxmlBase
 
   def initialize(params = nil)
     return unless params.is_a?(Hash)
-    @xml_attributes = params[:xml_attributes] || {}
+    @xml_attributes = params['xml_attributes'] || params[:xml_attributes] || {}
+    params.delete('xml_attributes')
     params.delete(:xml_attributes)
 
     params.each do |attr, value|
@@ -59,14 +60,15 @@ class Quickbooks::Parser::QbxmlBase
   end
 
   def self.attribute_names
-    instance_methods(false).reject { |m| m == "xml_attributes" || m[-1..-1] == '=' || m =~ /_xml_class/} 
+    # 1.9.2 changes instance_methods behavior to return symbols instead of strings
+    instance_methods(false).reject { |m| m[-1..-1] == '=' || m.to_s =~ /xml_attributes/ || m =~ /_xml_class/}.map { |m| m.to_s }
   end
 
   # returns innermost attributes without outer layers of the hash
   #
   def inner_attributes(parent = nil)
     attrs = attributes(false)
-    attrs.delete(:xml_attributes)
+    attrs.delete('xml_attributes')
     values = attrs.values.compact
 
     if values.empty?
@@ -87,7 +89,7 @@ class Quickbooks::Parser::QbxmlBase
 
   def attributes(recursive = true)
     attrs = {}
-    attrs[:xml_attributes] = xml_attributes
+    attrs['xml_attributes'] = xml_attributes
     self.class.attribute_names.inject(attrs) do |h, m|
       val = self.send(m)
       if !val.nil?
