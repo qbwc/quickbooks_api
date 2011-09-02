@@ -22,13 +22,13 @@ module Quickbooks::Parser::XMLParsing
   end
 
   def leaf_node?(xml_obj)
-    xml_obj.children.size == 1 && xml_obj.children.first.class == XML_TEXT
+    xml_obj.children.size == 0 || xml_obj.children.size == 1
   end
 
   def parse_leaf_node_data(xml_obj)
     attr_name = underscore(xml_obj)
     text_node = xml_obj.children.first
-    [attr_name, text_node.text]
+    [attr_name, text_node && text_node.text]
   end
 
   def parse_xml_attributes(xml_obj)
