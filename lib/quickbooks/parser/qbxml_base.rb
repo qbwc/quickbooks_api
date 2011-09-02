@@ -66,7 +66,7 @@ class Quickbooks::Parser::QbxmlBase
 
   # returns innermost attributes without outer layers of the hash
   #
-  def inner_attributes(parent = nil)
+  def inner_attributes(parent = self)
     attrs = attributes(false)
     attrs.delete('xml_attributes')
     values = attrs.values.compact
