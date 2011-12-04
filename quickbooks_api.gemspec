@@ -1,6 +1,6 @@
 spec = Gem::Specification.new do |s|
   s.name = 'quickbooks_api'
-  s.version = '0.1.4'
+  s.version = '0.1.5'
 
   s.summary = "QuickBooks XML API"
   s.description = %{A QuickBooks QBXML wrapper for Ruby}
@@ -14,4 +14,5 @@ spec = Gem::Specification.new do |s|
 
   s.add_dependency(%q<activesupport>, [">= 0"])
   s.add_dependency(%q<nokogiri>, [">= 0"])
+  s.add_dependency(%q<buffered_logger>, [">= 0.1.3"])
 end
