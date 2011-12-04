@@ -1,3 +1,4 @@
+# $LOAD_PATH.unshift "#{File.dirname(File.expand_path(__FILE__))}/../lib/"
 require 'rubygems'
 
 module Quickbooks; end

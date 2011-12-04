@@ -22,7 +22,7 @@ module Quickbooks::Parser::XMLParsing
   end
 
   def leaf_node?(xml_obj)
-    xml_obj.children.size == 0 || xml_obj.children.size == 1
+    (xml_obj.children.size == 0 || xml_obj.children.size == 1) && xml_obj.attributes.empty?
   end
 
   def parse_leaf_node_data(xml_obj)

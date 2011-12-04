@@ -6,6 +6,7 @@ private
   def process_leaf_node(xml_obj, parent_class)
    attr_name, qb_type = parse_leaf_node_data(xml_obj)
     if parent_class
+      log.debug [parent_class, attr_name, qb_type].inspect
       add_casting_attribute(parent_class, attr_name, qb_type)
     end
   end
