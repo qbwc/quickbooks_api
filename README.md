@@ -1,3 +1,7 @@
+# Attention
+
+This gem is deprecated. Please use [qbxml](http://github.com/skryl/qbxml) instead.
+
 ## About
 
 *quickbooks_api* is a quickbooks xml parser and API inspection tool. It gives
